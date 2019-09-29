@@ -25,6 +25,8 @@ class ReactResizeObserver extends React.Component<
   ResizeObserverProps,
   ResizeObserverState
 > {
+  static displayName = 'ResizeObserver';
+
   resizeObserver: ResizeObserver | null = null;
 
   childNode: RefNode = null;
