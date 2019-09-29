@@ -6,9 +6,7 @@
     "react",
     "react-component",
     "react-resize-observer",
-    "resize-observer",
-    "antd",
-    "ant-design"
+    "resize-observer"
   ],
   "main": "./lib/index",
   "module": "./es/index",
