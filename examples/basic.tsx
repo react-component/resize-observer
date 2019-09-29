@@ -11,8 +11,9 @@ export default function App() {
     console.log('Ref:', textareaRef.current);
   }, []);
 
-  const onResize = () => {
+  const onResize = ({ width, height }: { width: number; height: number }) => {
     setTimes(prevTimes => prevTimes + 1);
+    console.log('Resize:', width, height);
   };
 
   return (

@@ -10,7 +10,7 @@ interface ResizeObserverProps {
   children: React.ReactElement;
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
-  onResize?: () => void;
+  onResize?: (size: { width: number; height: number }) => void;
 }
 
 interface ResizeObserverState {
@@ -86,13 +86,12 @@ class ReactResizeObserver extends React.Component<
     const fixedHeight = Math.floor(height);
 
     if (this.state.width !== fixedWidth || this.state.height !== fixedHeight) {
-      this.setState({
-        width: fixedWidth,
-        height: fixedHeight,
-      });
+      const size = { width: fixedWidth, height: fixedHeight };
+
+      this.setState(size);
 
       if (onResize) {
-        onResize();
+        onResize(size);
       }
     }
   };
