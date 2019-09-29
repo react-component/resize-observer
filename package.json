@@ -1,12 +1,12 @@
 {
-  "name": "rc-footer",
+  "name": "rc-resize-observer",
   "version": "0.5.0",
-  "description": "Pretty Footer react component used in used in ant.design",
+  "description": "Resize observer for React",
   "keywords": [
     "react",
     "react-component",
-    "react-footer",
-    "footer",
+    "react-resize-observer",
+    "resize-observer",
     "antd",
     "ant-design"
   ],
@@ -19,13 +19,13 @@
     "lib",
     "dist"
   ],
-  "homepage": "https://react-component.github.io/footer",
+  "homepage": "https://react-component.github.io/resize-observer",
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-component/footer.git"
+    "url": "git@github.com:react-component/resize-observer.git"
   },
   "bugs": {
-    "url": "http://github.com/react-component/footer/issues"
+    "url": "http://github.com/react-component/resize-observer/issues"
   },
   "license": "MIT",
   "scripts": {
@@ -40,7 +40,9 @@
     "coverage": "father test --coverage"
   },
   "dependencies": {
-    "classnames": "^2.2.1"
+    "classnames": "^2.2.1",
+    "rc-util": "^4.11.1",
+    "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.9",

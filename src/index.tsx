@@ -1,81 +1,151 @@
-import React from 'react';
-import classNames from 'classnames';
-import Column, { FooterColumn } from './column';
+import * as React from 'react';
+import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
+import toArray from 'rc-util/lib/Children/toArray';
+import warning from 'rc-util/lib/warning';
+import ResizeObserver from 'resize-observer-polyfill';
 
-export interface FooterProps {
-  prefixCls?: string;
-  bottom?: React.ReactNode;
-  columns?: FooterColumn[];
-  theme?: 'dark' | 'light';
-  className?: string;
-  style?: React.CSSProperties;
-  backgroundColor?: string;
-  columnLayout?: 'space-around' | 'space-between';
+type DomElement = Element | null;
+
+interface ResizeObserverProps {
+  children: React.ReactElement;
+  disabled?: boolean;
+  /** Trigger if element resized. Will always trigger when first time render. */
+  onResize?: () => void;
 }
 
-const Footer: React.FC<FooterProps> = ({
-  prefixCls = 'rc-footer',
-  className,
-  style,
-  bottom,
-  columns,
-  backgroundColor,
-  columnLayout,
-  theme = 'dark',
-  ...restProps
-}) => {
-  const footerClassName = classNames(`${prefixCls}`, className, {
-    [`${prefixCls}-${theme}`]: !!theme,
-  });
-  return (
-    <footer
-      {...restProps}
-      className={footerClassName}
-      style={{
-        ...style,
-        backgroundColor,
-      }}
-    >
-      <section className={`${prefixCls}-container`}>
-        {columns && columns.length > 0 && (
-          <section
-            className={`${prefixCls}-columns`}
-            style={{
-              justifyContent: columnLayout,
-            }}
-          >
-            {columns.map(
-              (
-                {
-                  title,
-                  icon,
-                  style: columnStyle,
-                  className: columnClassName,
-                  items = [],
-                },
-                i,
-              ) => (
-                <Column
-                  key={i}
-                  prefixCls={prefixCls}
-                  title={title}
-                  icon={icon}
-                  items={items}
-                  style={columnStyle}
-                  className={columnClassName}
-                />
-              ),
-            )}
-          </section>
-        )}
-      </section>
-      {bottom && (
-        <section className={`${prefixCls}-bottom`}>
-          <div className={`${prefixCls}-bottom-container`}>{bottom}</div>
-        </section>
-      )}
-    </footer>
-  );
-};
+interface ResizeObserverState {
+  height: number;
+  width: number;
+}
 
-export default Footer;
+type RefNode = React.ReactInstance | HTMLElement | null;
+
+// Still need to be compatible with React 15, we use class component here
+class ReactResizeObserver extends React.Component<
+  ResizeObserverProps,
+  ResizeObserverState
+> {
+  resizeObserver: ResizeObserver | null = null;
+
+  childNode: RefNode = null;
+
+  currentElement: HTMLElement | null = null;
+
+  state = {
+    width: 0,
+    height: 0,
+  };
+
+  componentDidMount() {
+    this.onComponentUpdated();
+  }
+
+  componentDidUpdate() {
+    this.onComponentUpdated();
+  }
+
+  componentWillUnmount() {
+    this.destroyObserver();
+  }
+
+  onComponentUpdated() {
+    const { disabled } = this.props;
+
+    // Unregister if disabled
+    if (disabled) {
+      this.destroyObserver();
+      return;
+    }
+
+    // Unregister if element changed
+    const element = findDOMNode(this.childNode || this) as Element;
+    const elementChanged = element !== this.currentElement;
+    if (elementChanged) {
+      this.destroyObserver();
+    }
+
+    if (!this.resizeObserver && element) {
+      this.resizeObserver = new ResizeObserver(this.onResize);
+      this.resizeObserver.observe(element);
+    }
+  }
+
+  onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
+    const { onResize } = this.props;
+
+    const { target } = entries[0];
+
+    const { width, height } = target.getBoundingClientRect();
+
+    /**
+     * Resize observer trigger when content size changed.
+     * In most case we just care about element size,
+     * let's use `boundary` instead of `contentRect` here to avoid shaking.
+     */
+    const fixedWidth = Math.floor(width);
+    const fixedHeight = Math.floor(height);
+
+    if (this.state.width !== fixedWidth || this.state.height !== fixedHeight) {
+      this.setState({
+        width: fixedWidth,
+        height: fixedHeight,
+      });
+
+      if (onResize) {
+        onResize();
+      }
+    }
+  };
+
+  destroyObserver() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
+  }
+
+  render() {
+    const { children } = this.props;
+    const childNodes = toArray(children);
+
+    if (childNodes.length > 1) {
+      warning(
+        false,
+        'Find more than one child node with `children` in ResizeObserver. Will only render first one.',
+      );
+    } else if (childNodes.length === 0) {
+      warning(
+        false,
+        '`children` of ResizeObserver is empty. Nothing is in observe.',
+      );
+    }
+
+    const childNode = childNodes[0];
+
+    if (React.isValidElement(childNode)) {
+      const { ref } = childNode as any;
+
+      return React.cloneElement(childNode as any, {
+        ref: (node: RefNode) => {
+          this.childNode = node;
+
+          // Should forward ref
+          if (!ref) {
+            return;
+          }
+
+          const type = typeof ref;
+          if (type === 'function') {
+            ref(node);
+          } else if (type === 'object') {
+            ref.current = node;
+          }
+        },
+      });
+    }
+
+    return childNode || null;
+  }
+}
+
+export default ReactResizeObserver;
