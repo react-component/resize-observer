@@ -31,7 +31,7 @@ class ReactResizeObserver extends React.Component<
 
   childNode: RefNode = null;
 
-  currentElement: HTMLElement | null = null;
+  currentElement: Element | null = null;
 
   state = {
     width: 0,
@@ -64,6 +64,7 @@ class ReactResizeObserver extends React.Component<
     const elementChanged = element !== this.currentElement;
     if (elementChanged) {
       this.destroyObserver();
+      this.currentElement = element;
     }
 
     if (!this.resizeObserver && element) {

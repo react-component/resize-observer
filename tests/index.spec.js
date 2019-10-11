@@ -83,6 +83,7 @@ describe('ResizeObserver', () => {
 
     wrapper.triggerResize();
 
+    expect(wrapper.instance().currentElement).toBeTruthy();
     expect(onResize).toHaveBeenCalled();
   });
 
