@@ -7,7 +7,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 type DomElement = Element | null;
 
 interface ResizeObserverProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
   onResize?: (size: { width: number; height: number }) => void;
@@ -113,13 +113,15 @@ class ReactResizeObserver extends React.Component<
     if (childNodes.length > 1) {
       warning(
         false,
-        'Find more than one child node with `children` in ResizeObserver. Will only render first one.',
+        'Find more than one child node with `children` in ResizeObserver. Will only observe first one.',
       );
     } else if (childNodes.length === 0) {
       warning(
         false,
         '`children` of ResizeObserver is empty. Nothing is in observe.',
       );
+
+      return null;
     }
 
     const childNode = childNodes[0];
@@ -127,7 +129,7 @@ class ReactResizeObserver extends React.Component<
     if (React.isValidElement(childNode)) {
       const { ref } = childNode as any;
 
-      return React.cloneElement(childNode as any, {
+      childNodes[0] = React.cloneElement(childNode as any, {
         ref: (node: RefNode) => {
           this.childNode = node;
 
@@ -146,7 +148,7 @@ class ReactResizeObserver extends React.Component<
       });
     }
 
-    return childNode || null;
+    return childNodes.length === 1 ? childNodes[0] : childNodes;
   }
 }
 

@@ -44,7 +44,7 @@ describe('ResizeObserver', () => {
       );
 
       expect(errorSpy).toHaveBeenCalledWith(
-        'Warning: Find more than one child node with `children` in ResizeObserver. Will only render first one.',
+        'Warning: Find more than one child node with `children` in ResizeObserver. Will only observe first one.',
       );
     });
   });
