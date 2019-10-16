@@ -4,7 +4,7 @@ import toArray from 'rc-util/lib/Children/toArray';
 import warning from 'rc-util/lib/warning';
 import ResizeObserver from 'resize-observer-polyfill';
 
-type DomElement = Element | null;
+const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
 interface ResizeObserverProps {
   children: React.ReactNode;
@@ -148,7 +148,20 @@ class ReactResizeObserver extends React.Component<
       });
     }
 
-    return childNodes.length === 1 ? childNodes[0] : childNodes;
+    return childNodes.length === 1
+      ? childNodes[0]
+      : childNodes.map((node, index) => {
+          if (
+            !React.isValidElement(node) ||
+            ('key' in node && node.key !== null)
+          ) {
+            return node;
+          }
+
+          return React.cloneElement(node, {
+            key: `${INTERNAL_PREFIX_KEY}-${index}`,
+          });
+        });
   }
 }
 

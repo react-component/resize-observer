@@ -36,9 +36,9 @@ describe('ResizeObserver', () => {
     });
 
     it('multiple children', () => {
-      mount(
+      const wrapper = mount(
         <ResizeObserver>
-          <div />
+          <div key="exist-key" />
           <div />
         </ResizeObserver>,
       );
@@ -46,6 +46,13 @@ describe('ResizeObserver', () => {
       expect(errorSpy).toHaveBeenCalledWith(
         'Warning: Find more than one child node with `children` in ResizeObserver. Will only observe first one.',
       );
+
+      expect(
+        wrapper
+          .find('div')
+          .first()
+          .key(),
+      ).toEqual('exist-key');
     });
   });
 
