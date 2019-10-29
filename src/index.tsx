@@ -2,7 +2,9 @@ import * as React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import toArray from 'rc-util/lib/Children/toArray';
 import warning from 'rc-util/lib/warning';
+import { composeRef } from 'rc-util/lib/ref';
 import ResizeObserver from 'resize-observer-polyfill';
+import { supportRef } from './util';
 
 const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
@@ -99,6 +101,10 @@ class ReactResizeObserver extends React.Component<
     }
   };
 
+  setChildNode = (node: RefNode) => {
+    this.childNode = node;
+  };
+
   destroyObserver() {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
@@ -126,25 +132,11 @@ class ReactResizeObserver extends React.Component<
 
     const childNode = childNodes[0];
 
-    if (React.isValidElement(childNode)) {
+    if (React.isValidElement(childNode) && supportRef(childNode)) {
       const { ref } = childNode as any;
 
       childNodes[0] = React.cloneElement(childNode as any, {
-        ref: (node: RefNode) => {
-          this.childNode = node;
-
-          // Should forward ref
-          if (!ref) {
-            return;
-          }
-
-          const type = typeof ref;
-          if (type === 'function') {
-            ref(node);
-          } else if (type === 'object') {
-            ref.current = node;
-          }
-        },
+        ref: composeRef(ref, this.setChildNode),
       });
     }
 

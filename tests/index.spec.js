@@ -116,4 +116,42 @@ describe('ResizeObserver', () => {
     wrapper.unmount();
     expect(instance.resizeObserver).toBeFalsy();
   });
+
+  describe('work with child type', () => {
+    it('function component', () => {
+      const FC = () => <div />;
+      mount(
+        <ResizeObserver>
+          <FC />
+        </ResizeObserver>,
+      );
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it('forwardRef function component', () => {
+      const FRC = React.forwardRef(() => <div />);
+      mount(
+        <ResizeObserver>
+          <FRC />
+        </ResizeObserver>,
+      );
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it('class component', () => {
+      class CC extends React.Component {
+        state = {};
+
+        render() {
+          return null;
+        }
+      }
+      mount(
+        <ResizeObserver>
+          <CC />
+        </ResizeObserver>,
+      );
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+  });
 });
