@@ -4,12 +4,14 @@ import toArray from 'rc-util/lib/Children/toArray';
 import warning from 'rc-util/lib/warning';
 import { composeRef, supportRef } from 'rc-util/lib/ref';
 import ResizeObserver from 'resize-observer-polyfill';
+import { debounce } from './util';
 
 const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
 interface ResizeObserverProps {
   children: React.ReactNode;
   disabled?: boolean;
+  waitTime?: number;
   /** Trigger if element resized. Will always trigger when first time render. */
   onResize?: (size: { width: number; height: number }) => void;
 }
@@ -39,7 +41,11 @@ class ReactResizeObserver extends React.Component<
     height: 0,
   };
 
+  onDebounceResize: ResizeObserverCallback | null = null;
+
   componentDidMount() {
+    const { waitTime = 10 } = this.props;
+    this.onDebounceResize = debounce(this.onResize, waitTime);
     this.onComponentUpdated();
   }
 
@@ -68,8 +74,8 @@ class ReactResizeObserver extends React.Component<
       this.currentElement = element;
     }
 
-    if (!this.resizeObserver && element) {
-      this.resizeObserver = new ResizeObserver(this.onResize);
+    if (!this.resizeObserver && element && this.onDebounceResize) {
+      this.resizeObserver = new ResizeObserver(this.onDebounceResize);
       this.resizeObserver.observe(element);
     }
   }

@@ -1,13 +1,17 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable no-var */
 /* eslint-disable func-names */
-export const debounce = function(func, wait, immediate) {
+export const debounce = function(
+  func: Function,
+  wait: number,
+  immediate?: any,
+) {
   // immediate默认为false
-  let timeout;
-  let args;
-  let context;
-  let timestamp;
-  let result;
+  let timeout: NodeJS.Timeout | null;
+  let args: IArguments | null;
+  let context: null;
+  let timestamp: number;
+  let result: any;
 
   var later = function() {
     const last = Date.now() - timestamp;
@@ -17,20 +21,19 @@ export const debounce = function(func, wait, immediate) {
     } else {
       timeout = null;
       if (!immediate) {
-        result = func.apply(context, args);
+        result = func.apply(context, args as any);
         if (!timeout) context = args = null;
       }
     }
   };
 
   return function() {
+    // @ts-ignore
     context = this;
     // eslint-disable-next-line prefer-rest-params
     args = arguments;
     timestamp = Date.now();
-    // 第一次调用该方法时，且immediate为true，则调用func函数
     const callNow = immediate && !timeout;
-    // 在wait指定的时间间隔内首次调用该方法，则启动计时器定时调用func函数
     if (!timeout) timeout = setTimeout(later, wait);
     if (callNow) {
       result = func.apply(context, args);
