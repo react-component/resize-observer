@@ -1,14 +1,17 @@
 import '../assets/index.less';
-import React from 'react';
+import React, { useState } from 'react';
 import ResizeObserver from '../src';
 
 export default function App() {
   const [times, setTimes] = React.useState(0);
   const [disabled, setDisabled] = React.useState(false);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-
+  const [debounce, setDebounce] = useState(100);
   React.useEffect(() => {
     console.log('Ref:', textareaRef.current);
+    setTimeout(() => {
+      setDebounce(10000);
+    }, 10000);
   }, []);
 
   const onResize = ({ width, height }: { width: number; height: number }) => {
@@ -32,8 +35,14 @@ export default function App() {
           </label>
           {' >>> '}
           <span>Resize times: {times}</span>
+          <br />
+          debounce：{debounce}
         </div>
-        <ResizeObserver onResize={onResize} disabled={disabled} waitTime={100}>
+        <ResizeObserver
+          onResize={onResize}
+          disabled={disabled}
+          debounce={debounce}
+        >
           <textarea ref={textareaRef} placeholder="I'm a textarea!" />
         </ResizeObserver>
       </div>
