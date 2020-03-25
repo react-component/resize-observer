@@ -7,11 +7,16 @@ import ResizeObserver from 'resize-observer-polyfill';
 
 const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
-interface ResizeObserverProps {
+export interface ResizeObserverProps {
   children: React.ReactNode;
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
-  onResize?: (size: { width: number; height: number }) => void;
+  onResize?: (size: {
+    width: number;
+    height: number;
+    offsetWidth: number;
+    offsetHeight: number;
+  }) => void;
 }
 
 interface ResizeObserverState {
@@ -22,10 +27,7 @@ interface ResizeObserverState {
 type RefNode = React.ReactInstance | HTMLElement | null;
 
 // Still need to be compatible with React 15, we use class component here
-class ReactResizeObserver extends React.Component<
-  ResizeObserverProps,
-  ResizeObserverState
-> {
+class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObserverState> {
   static displayName = 'ResizeObserver';
 
   resizeObserver: ResizeObserver | null = null;
@@ -77,9 +79,10 @@ class ReactResizeObserver extends React.Component<
   onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
     const { onResize } = this.props;
 
-    const { target } = entries[0];
+    const target = entries[0].target as HTMLElement;
 
     const { width, height } = target.getBoundingClientRect();
+    const { offsetWidth, offsetHeight } = target;
 
     /**
      * Resize observer trigger when content size changed.
@@ -95,7 +98,11 @@ class ReactResizeObserver extends React.Component<
       this.setState(size);
 
       if (onResize) {
-        onResize(size);
+        onResize({
+          ...size,
+          offsetWidth,
+          offsetHeight,
+        });
       }
     }
   };
@@ -121,10 +128,7 @@ class ReactResizeObserver extends React.Component<
         'Find more than one child node with `children` in ResizeObserver. Will only observe first one.',
       );
     } else if (childNodes.length === 0) {
-      warning(
-        false,
-        '`children` of ResizeObserver is empty. Nothing is in observe.',
-      );
+      warning(false, '`children` of ResizeObserver is empty. Nothing is in observe.');
 
       return null;
     }
@@ -142,10 +146,7 @@ class ReactResizeObserver extends React.Component<
     return childNodes.length === 1
       ? childNodes[0]
       : childNodes.map((node, index) => {
-          if (
-            !React.isValidElement(node) ||
-            ('key' in node && node.key !== null)
-          ) {
+          if (!React.isValidElement(node) || ('key' in node && node.key !== null)) {
             return node;
           }
 

@@ -1,6 +1,6 @@
 import '../assets/index.less';
 import React from 'react';
-import ResizeObserver from '../src';
+import ResizeObserver, { ResizeObserverProps } from '../src';
 
 export default function App() {
   const [times, setTimes] = React.useState(0);
@@ -11,14 +11,29 @@ export default function App() {
     console.log('Ref:', textareaRef.current);
   }, []);
 
-  const onResize = ({ width, height }: { width: number; height: number }) => {
+  const onResize: ResizeObserverProps['onResize'] = ({
+    width,
+    height,
+    offsetHeight,
+    offsetWidth,
+  }) => {
     setTimes(prevTimes => prevTimes + 1);
-    console.log('Resize:', width, height);
+    console.log(
+      'Resize:',
+      '\n',
+      'BoundingBox',
+      width,
+      height,
+      '\n',
+      'Offset',
+      offsetWidth,
+      offsetHeight,
+    );
   };
 
   return (
     <React.StrictMode>
-      <div>
+      <div style={{ transform: 'scale(1.1)', transformOrigin: '0% 0%' }}>
         <div>
           <label>
             <input
