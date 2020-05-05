@@ -51,7 +51,7 @@
     "@types/react-dom": "^16.9.0",
     "@umijs/fabric": "^1.1.10",
     "coveralls": "^3.0.6",
-    "cross-env": "^6.0.0",
+    "cross-env": "^7.0.2",
     "enzyme": "^3.0.0",
     "enzyme-adapter-react-16": "^1.0.1",
     "enzyme-to-json": "^3.4.0",
