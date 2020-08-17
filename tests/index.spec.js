@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
+import 'regenerator-runtime';
 import ResizeObserver from '../src';
 import { spyElementPrototype } from './utils/domHook';
 
@@ -80,7 +81,7 @@ describe('ResizeObserver', () => {
     });
   });
 
-  it('onResize', () => {
+  it('onResize', async () => {
     const onResize = jest.fn();
     const wrapper = mount(
       <ResizeObserver onResize={onResize}>
@@ -89,7 +90,7 @@ describe('ResizeObserver', () => {
     );
 
     wrapper.triggerResize();
-
+    await Promise.resolve();
     expect(wrapper.instance().currentElement).toBeTruthy();
     expect(onResize).toHaveBeenCalled();
   });
