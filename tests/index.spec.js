@@ -2,20 +2,30 @@ import React from 'react';
 import { mount } from 'enzyme';
 import 'regenerator-runtime';
 import ResizeObserver from '../src';
-import { spyElementPrototype } from './utils/domHook';
+import { spyElementPrototypes } from './utils/domHook';
 
 describe('ResizeObserver', () => {
   let errorSpy;
   let domSpy;
   let mockWidth;
   let mockHeight;
+  let mockOffsetWidth;
+  let mockOffsetHeight;
 
   beforeAll(() => {
     errorSpy = jest.spyOn(console, 'error').mockImplementation(() => null);
-    domSpy = spyElementPrototype(HTMLElement, 'getBoundingClientRect', () => ({
-      width: mockWidth,
-      height: mockHeight,
-    }));
+    domSpy = spyElementPrototypes(HTMLElement, {
+      getBoundingClientRect: () => ({
+        width: mockWidth,
+        height: mockHeight,
+      }),
+      offsetWidth: {
+        get: () => mockOffsetWidth,
+      },
+      offsetHeight: {
+        get: () => mockOffsetHeight,
+      },
+    });
   });
 
   beforeEach(() => {
@@ -81,18 +91,50 @@ describe('ResizeObserver', () => {
     });
   });
 
-  it('onResize', async () => {
-    const onResize = jest.fn();
-    const wrapper = mount(
-      <ResizeObserver onResize={onResize}>
-        <div />
-      </ResizeObserver>,
-    );
+  describe('onResize', () => {
+    it('basic', async () => {
+      const onResize = jest.fn();
+      const wrapper = mount(
+        <ResizeObserver onResize={onResize}>
+          <div />
+        </ResizeObserver>,
+      );
 
-    wrapper.triggerResize();
-    await Promise.resolve();
-    expect(wrapper.instance().currentElement).toBeTruthy();
-    expect(onResize).toHaveBeenCalled();
+      wrapper.triggerResize();
+      await Promise.resolve();
+      expect(wrapper.instance().currentElement).toBeTruthy();
+      expect(onResize).toHaveBeenCalled();
+    });
+
+    it('trigger when offset change', async () => {
+      mockHeight = 0;
+      mockWidth = 0;
+      mockOffsetHeight = 0;
+      mockOffsetWidth = 0;
+
+      const onResize = jest.fn();
+      const wrapper = mount(
+        <ResizeObserver onResize={onResize}>
+          <div />
+        </ResizeObserver>,
+      );
+
+      // Init
+      wrapper.triggerResize();
+      await Promise.resolve();
+      onResize.mockReset();
+
+      // Not trigger when not change
+      wrapper.triggerResize();
+      await Promise.resolve();
+      expect(onResize).not.toHaveBeenCalled();
+
+      // Trigger when offset changed
+      mockOffsetWidth = 1023;
+      wrapper.triggerResize();
+      await Promise.resolve();
+      expect(onResize).toHaveBeenCalled();
+    });
   });
 
   it('disabled should not trigger onResize', () => {

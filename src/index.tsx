@@ -22,6 +22,8 @@ export interface ResizeObserverProps {
 interface ResizeObserverState {
   height: number;
   width: number;
+  offsetHeight: number;
+  offsetWidth: number;
 }
 
 type RefNode = React.ReactInstance | HTMLElement | null;
@@ -39,6 +41,8 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
   state = {
     width: 0,
     height: 0,
+    offsetHeight: 0,
+    offsetWidth: 0,
   };
 
   componentDidMount() {
@@ -92,8 +96,13 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
     const fixedWidth = Math.floor(width);
     const fixedHeight = Math.floor(height);
 
-    if (this.state.width !== fixedWidth || this.state.height !== fixedHeight) {
-      const size = { width: fixedWidth, height: fixedHeight };
+    if (
+      this.state.width !== fixedWidth ||
+      this.state.height !== fixedHeight ||
+      this.state.offsetWidth !== offsetWidth ||
+      this.state.offsetHeight !== offsetHeight
+    ) {
+      const size = { width: fixedWidth, height: fixedHeight, offsetWidth, offsetHeight };
 
       this.setState(size);
 
