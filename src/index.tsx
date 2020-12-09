@@ -11,12 +11,15 @@ export interface ResizeObserverProps {
   children: React.ReactNode;
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
-  onResize?: (size: {
-    width: number;
-    height: number;
-    offsetWidth: number;
-    offsetHeight: number;
-  }) => void;
+  onResize?: (
+    size: {
+      width: number;
+      height: number;
+      offsetWidth: number;
+      offsetHeight: number;
+    },
+    element: HTMLElement,
+  ) => void;
 }
 
 interface ResizeObserverState {
@@ -109,11 +112,14 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
       if (onResize) {
         // defer the callback but not defer to next frame
         Promise.resolve().then(() => {
-          onResize({
-            ...size,
-            offsetWidth,
-            offsetHeight,
-          });
+          onResize(
+            {
+              ...size,
+              offsetWidth,
+              offsetHeight,
+            },
+            target,
+          );
         });
       }
     }
