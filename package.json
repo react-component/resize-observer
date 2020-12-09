@@ -1,6 +1,6 @@
 {
   "name": "rc-resize-observer",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Resize observer for React",
   "keywords": [
     "react",
