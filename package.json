@@ -57,7 +57,7 @@
     "enzyme-adapter-react-16": "^1.0.1",
     "enzyme-to-json": "^3.4.0",
     "father": "^2.13.4",
-    "less": "^3.10.3",
+    "less": "^4.1.0",
     "np": "^6.2.4",
     "prettier": "^2.1.1",
     "pretty-quick": "^3.0.1",
