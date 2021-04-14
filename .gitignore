@@ -29,4 +29,8 @@ yarn.lock
 package-lock.json
 coverage/
 .doc
-tsconfig.json
+# umi
+.umi
+.umi-production
+.umi-test
+.env.local

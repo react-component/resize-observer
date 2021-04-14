@@ -1,11 +1,6 @@
 # rc-resize-observer
 
-[![NPM version][npm-image]][npm-url]
-[![build status][travis-image]][travis-url]
-[![Codecov][codecov-image]][codecov-url]
-[![david deps][david-image]][david-url]
-[![david devDeps][david-dev-image]][david-dev-url]
-[![npm download][download-image]][download-url]
+[![NPM version][npm-image]][npm-url] [![dumi](https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square)](https://github.com/umijs/dumi) [![build status][travis-image]][travis-url] [![Codecov][codecov-image]][codecov-url] [![david deps][david-image]][david-url] [![david devDeps][david-dev-image]][david-dev-url] [![npm download][download-image]][download-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-resize-observer.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-resize-observer
