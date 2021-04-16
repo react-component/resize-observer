@@ -10,6 +10,7 @@ const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 export interface ResizeObserverProps {
   children: React.ReactNode;
   disabled?: boolean;
+  debounce?: number;
   /** Trigger if element resized. Will always trigger when first time render. */
   onResize?: (
     size: {
@@ -78,10 +79,39 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
     }
 
     if (!this.resizeObserver && element) {
-      this.resizeObserver = new ResizeObserver(this.onResize);
+      this.resizeObserver = new ResizeObserver(this.debounce);
       this.resizeObserver.observe(element);
     }
   }
+
+  timeout: number | null = null;
+
+  timestamp: number = 0;
+
+  debounce: ResizeObserverCallback = (
+    entries: ResizeObserverEntry[],
+    observer: ResizeObserver,
+  ) => {
+    const { debounce = 0 } = this.props;
+    const { onResize } = this;
+
+    const callNow = !this.timeout;
+
+    if (callNow) {
+      onResize(entries, observer);
+    }
+
+    const last = Date.now() - this.timestamp;
+
+    if (last < debounce && last >= 0) {
+      this.timeout = window.setTimeout(() => {
+        this.debounce(entries, observer);
+      }, debounce - last);
+    } else {
+      this.timestamp = Date.now();
+      onResize(entries, observer);
+    }
+  };
 
   onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
     const { onResize } = this.props;
