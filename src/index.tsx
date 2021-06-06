@@ -3,7 +3,7 @@ import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import toArray from 'rc-util/lib/Children/toArray';
 import warning from 'rc-util/lib/warning';
 import { composeRef, supportRef } from 'rc-util/lib/ref';
-import ResizeObserver from 'resize-observer-polyfill';
+import { ResizeObserver } from '@juggle/resize-observer';
 
 const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
