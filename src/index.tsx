@@ -113,11 +113,7 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
         // defer the callback but not defer to next frame
         Promise.resolve().then(() => {
           onResize(
-            {
-              ...size,
-              offsetWidth,
-              offsetHeight,
-            },
+            size,
             target,
           );
         });
