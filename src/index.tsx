@@ -1,5 +1,4 @@
 import * as React from 'react';
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import toArray from 'rc-util/lib/Children/toArray';
 import warning from 'rc-util/lib/warning';
 import { composeRef, supportRef } from 'rc-util/lib/ref';
@@ -37,9 +36,9 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
 
   resizeObserver: ResizeObserver | null = null;
 
-  childNode: RefNode = null;
+  currentElement: RefNode | null = null;
 
-  currentElement: Element | null = null;
+  childRef = React.createRef<RefNode>();
 
   state = {
     width: 0,
@@ -70,7 +69,7 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
     }
 
     // Unregister if element changed
-    const element = findDOMNode(this.childNode || this) as Element;
+    const element = this.childRef.current;
     const elementChanged = element !== this.currentElement;
     if (elementChanged) {
       this.destroyObserver();
@@ -79,7 +78,7 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
 
     if (!this.resizeObserver && element) {
       this.resizeObserver = new ResizeObserver(this.onResize);
-      this.resizeObserver.observe(element);
+      this.resizeObserver.observe(element as Element);
     }
   }
 
@@ -125,10 +124,6 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
     }
   };
 
-  setChildNode = (node: RefNode) => {
-    this.childNode = node;
-  };
-
   destroyObserver() {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
@@ -153,11 +148,11 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
 
     const childNode = childNodes[0];
 
-    if (React.isValidElement(childNode) && supportRef(childNode)) {
+    if (React.isValidElement<any>(childNode) && supportRef(childNode)) {
       const { ref } = childNode as any;
 
-      childNodes[0] = React.cloneElement(childNode as any, {
-        ref: composeRef(ref, this.setChildNode),
+      childNodes[0] = React.cloneElement(childNode, {
+        ref: composeRef(ref, this.childRef),
       });
     }
 
