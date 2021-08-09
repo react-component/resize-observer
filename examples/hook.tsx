@@ -1,23 +1,14 @@
 import '../assets/index.less';
 import React from 'react';
-import type { ResizeObserverProps } from '../src/ResizeObserver';
-import ResizeObserver from '../src/ResizeObserver';
+import type { OnResizeHandler } from '../src/OnResizeHandler';
+import { useResizeObserver } from '../src/useResizeObserver';
 
 export default function App() {
   const [times, setTimes] = React.useState(0);
   const [disabled, setDisabled] = React.useState(false);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
-  React.useEffect(() => {
-    console.log('Ref:', textareaRef.current);
-  }, []);
-
-  const onResize: ResizeObserverProps['onResize'] = ({
-    width,
-    height,
-    offsetHeight,
-    offsetWidth,
-  }) => {
+  const onResize: OnResizeHandler = ({ width, height, offsetWidth, offsetHeight }) => {
     setTimes((prevTimes) => prevTimes + 1);
     console.log(
       'Resize:',
@@ -31,6 +22,12 @@ export default function App() {
       offsetHeight,
     );
   };
+
+  useResizeObserver({ ref: textareaRef, onResize, disabled });
+
+  React.useEffect(() => {
+    console.log('Ref:', textareaRef.current);
+  }, []);
 
   return (
     <React.StrictMode>
@@ -49,9 +46,7 @@ export default function App() {
           {' >>> '}
           <span>Resize times: {times}</span>
         </div>
-        <ResizeObserver onResize={onResize} disabled={disabled}>
-          <textarea ref={textareaRef} placeholder="I'm a textarea!" />
-        </ResizeObserver>
+        <textarea ref={textareaRef} placeholder="I'm a textarea!" />
       </div>
     </React.StrictMode>
   );

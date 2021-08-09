@@ -4,6 +4,8 @@ import toArray from 'rc-util/lib/Children/toArray';
 import warning from 'rc-util/lib/warning';
 import { composeRef, supportRef } from 'rc-util/lib/ref';
 import ResizeObserver from 'resize-observer-polyfill';
+import type { Size } from './Size';
+import type { OnResizeHandler } from './OnResizeHandler';
 
 const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
@@ -11,28 +13,15 @@ export interface ResizeObserverProps {
   children: React.ReactNode;
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
-  onResize?: (
-    size: {
-      width: number;
-      height: number;
-      offsetWidth: number;
-      offsetHeight: number;
-    },
-    element: HTMLElement,
-  ) => void;
+  onResize?: OnResizeHandler;
 }
 
-interface ResizeObserverState {
-  height: number;
-  width: number;
-  offsetHeight: number;
-  offsetWidth: number;
-}
+type ResizeObserverState = Size;
 
 type RefNode = React.ReactInstance | HTMLElement | null;
 
 // Still need to be compatible with React 15, we use class component here
-class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObserverState> {
+export class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObserverState> {
   static displayName = 'ResizeObserver';
 
   resizeObserver: ResizeObserver | null = null;

@@ -1,6 +1,6 @@
 import '../assets/index.less';
 import React from 'react';
-import ResizeObserver from '../src';
+import ResizeObserver from '../src/ResizeObserver';
 
 export default function App() {
   const [times, setTimes] = React.useState(0);
@@ -9,7 +9,7 @@ export default function App() {
   const [disabled, setDisabled] = React.useState(false);
 
   const onResize = (size: { width: number; height: number }) => {
-    setTimes(prevTimes => prevTimes + 1);
+    setTimes((prevTimes) => prevTimes + 1);
     setWidth(size.width);
     setHeight(size.height);
   };
