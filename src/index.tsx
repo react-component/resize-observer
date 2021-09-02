@@ -110,13 +110,16 @@ class ReactResizeObserver extends React.Component<ResizeObserverProps, ResizeObs
       this.setState(size);
 
       if (onResize) {
+        const mergedOffsetWidth = offsetWidth === Math.round(width) ? width : offsetWidth;
+        const mergedOffsetHeight = offsetHeight === Math.round(height) ? height : offsetHeight;
+
         // defer the callback but not defer to next frame
         Promise.resolve().then(() => {
           onResize(
             {
               ...size,
-              offsetWidth,
-              offsetHeight,
+              offsetWidth: mergedOffsetWidth,
+              offsetHeight: mergedOffsetHeight,
             },
             target,
           );

@@ -58,12 +58,7 @@ describe('ResizeObserver', () => {
         'Warning: Find more than one child node with `children` in ResizeObserver. Will only observe first one.',
       );
 
-      expect(
-        wrapper
-          .find('div')
-          .first()
-          .key(),
-      ).toEqual('exist-key');
+      expect(wrapper.find('div').first().key()).toEqual('exist-key');
     });
   });
 
@@ -134,6 +129,30 @@ describe('ResizeObserver', () => {
       wrapper.triggerResize();
       await Promise.resolve();
       expect(onResize).toHaveBeenCalled();
+    });
+
+    it('accuracy if possible', async () => {
+      mockHeight = 10;
+      mockWidth = 10.03;
+      mockOffsetHeight = 10;
+      mockOffsetWidth = 10;
+
+      const onResize = jest.fn();
+      const wrapper = mount(
+        <ResizeObserver onResize={onResize}>
+          <div />
+        </ResizeObserver>,
+      );
+
+      wrapper.triggerResize();
+      await Promise.resolve();
+
+      expect(onResize).toHaveBeenCalledWith(
+        expect.objectContaining({
+          offsetWidth: 10.03,
+        }),
+        expect.anything(),
+      );
     });
   });
 
