@@ -3,6 +3,7 @@ import * as React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { observe, unobserve } from './utils/observerUtil';
 import type { ResizeObserverProps } from './';
+import DomWrapper from './DomWrapper';
 
 export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement;
@@ -11,6 +12,7 @@ export interface SingleObserverProps extends ResizeObserverProps {
 export default function SingleObserver(props: SingleObserverProps) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
+  const wrapperRef = React.useRef<DomWrapper>(null);
 
   // ============================= Size =============================
   const sizeRef = React.useRef({
@@ -77,21 +79,26 @@ export default function SingleObserver(props: SingleObserverProps) {
   }, []);
 
   // Dynamic observe
-  const currentElement = elementRef.current;
-
   React.useEffect(() => {
+    const currentElement: HTMLElement =
+      findDOMNode(elementRef.current) || findDOMNode(wrapperRef.current);
+
     if (currentElement && !disabled) {
       observe(currentElement, onInternalResize);
     }
 
     return () => unobserve(currentElement, onInternalResize);
-  }, [currentElement, disabled]);
+  }, [elementRef.current, disabled]);
 
   // ============================ Render ============================
   if (canRef) {
-    return React.cloneElement(children as any, {
-      ref: mergedRef,
-    });
+    return (
+      <DomWrapper ref={wrapperRef}>
+        {React.cloneElement(children as any, {
+          ref: mergedRef,
+        })}
+      </DomWrapper>
+    );
   }
   return children;
 }
