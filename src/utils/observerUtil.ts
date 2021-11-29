@@ -13,6 +13,9 @@ const resizeObserver = new ResizeObserver((entities: ResizeObserverEntry[]) => {
   });
 });
 
+/** Dev env only */
+export const _el = process.env.NODE_ENV !== 'production' ? elementListeners : null; // eslint-disable-line
+
 // ============================== Observe ==============================
 export function observe(element: Element, callback: ResizeListener) {
   if (!elementListeners.has(element)) {
