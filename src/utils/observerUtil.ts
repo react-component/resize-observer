@@ -1,14 +1,20 @@
 import ResizeObserver from 'resize-observer-polyfill';
 
-export type ResizeListener = () => void;
+export type ResizeListener = (element: Element) => void;
 
 // =============================== Const ===============================
-const elementListeners = new Map<HTMLElement, Set<ResizeListener>>();
+const elementListeners = new Map<Element, Set<ResizeListener>>();
 
-const resizeObserver = new ResizeObserver((entities) => {});
+// Note: ResizeObserver polyfill not support option to measure border-box resize
+const resizeObserver = new ResizeObserver((entities: ResizeObserverEntry[]) => {
+  entities.forEach(entity => {
+    const { target } = entity;
+    elementListeners.get(target)?.forEach(listener => listener(target));
+  });
+});
 
 // ============================== Observe ==============================
-export function observe(element: HTMLElement, callback: ResizeListener) {
+export function observe(element: Element, callback: ResizeListener) {
   if (!elementListeners.has(element)) {
     elementListeners.set(element, new Set());
     resizeObserver.observe(element);
@@ -17,7 +23,7 @@ export function observe(element: HTMLElement, callback: ResizeListener) {
   elementListeners.get(element).add(callback);
 }
 
-export function unobserve(element: HTMLElement, callback: ResizeListener) {
+export function unobserve(element: Element, callback: ResizeListener) {
   if (elementListeners.has(element)) {
     elementListeners.get(element).delete(callback);
     if (!elementListeners.get(element).size) {
