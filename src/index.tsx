@@ -1,25 +1,29 @@
 import * as React from 'react';
 import toArray from 'rc-util/lib/Children/toArray';
 import SingleObserver from './SingleObserver';
+import { Collection } from './Collection';
 
 const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
+export interface SizeInfo {
+  width: number;
+  height: number;
+  offsetWidth: number;
+  offsetHeight: number;
+}
+
+export type OnResize = (size: SizeInfo, element: HTMLElement) => void;
+
 export interface ResizeObserverProps {
+  /** Pass to ResizeObserver.Collection with additional data */
+  data?: any;
   children: React.ReactNode;
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
-  onResize?: (
-    size: {
-      width: number;
-      height: number;
-      offsetWidth: number;
-      offsetHeight: number;
-    },
-    element: HTMLElement,
-  ) => void;
+  onResize?: OnResize;
 }
 
-export default function ResizeObserver(props: ResizeObserverProps) {
+function ResizeObserver(props: ResizeObserverProps) {
   const { children } = props;
   const childNodes = toArray(children);
 
@@ -30,5 +34,9 @@ export default function ResizeObserver(props: ResizeObserverProps) {
         {child}
       </SingleObserver>
     );
-  });
+  }) as any as React.ReactElement;
 }
+
+ResizeObserver.Collection = Collection;
+
+export default ResizeObserver;

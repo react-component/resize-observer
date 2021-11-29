@@ -1,9 +1,10 @@
 import { composeRef, supportRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { observe, unobserve } from './utils/observerUtil';
-import type { ResizeObserverProps } from './';
+import { observe, unobserve } from '../utils/observerUtil';
+import type { ResizeObserverProps } from '..';
 import DomWrapper from './DomWrapper';
+import { CollectionContext } from '../Collection';
 
 export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement;
@@ -13,6 +14,8 @@ export default function SingleObserver(props: SingleObserverProps) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
   const wrapperRef = React.useRef<DomWrapper>(null);
+
+  const onCollectionResize = React.useContext(CollectionContext);
 
   // ============================= Size =============================
   const sizeRef = React.useRef({
@@ -37,7 +40,7 @@ export default function SingleObserver(props: SingleObserverProps) {
 
   // Handler
   const onInternalResize = React.useCallback((target: HTMLElement) => {
-    const { onResize } = propsRef.current;
+    const { onResize, data } = propsRef.current;
 
     const { width, height } = target.getBoundingClientRect();
     const { offsetWidth, offsetHeight } = target;
@@ -59,20 +62,23 @@ export default function SingleObserver(props: SingleObserverProps) {
       const size = { width: fixedWidth, height: fixedHeight, offsetWidth, offsetHeight };
       sizeRef.current = size;
 
-      if (onResize) {
-        const mergedOffsetWidth = offsetWidth === Math.round(width) ? width : offsetWidth;
-        const mergedOffsetHeight = offsetHeight === Math.round(height) ? height : offsetHeight;
+      // IE is strange, right?
+      const mergedOffsetWidth = offsetWidth === Math.round(width) ? width : offsetWidth;
+      const mergedOffsetHeight = offsetHeight === Math.round(height) ? height : offsetHeight;
 
+      const sizeInfo = {
+        ...size,
+        offsetWidth: mergedOffsetWidth,
+        offsetHeight: mergedOffsetHeight,
+      };
+
+      // Let collection know what happened
+      onCollectionResize?.(sizeInfo, target, data);
+
+      if (onResize) {
         // defer the callback but not defer to next frame
         Promise.resolve().then(() => {
-          onResize(
-            {
-              ...size,
-              offsetWidth: mergedOffsetWidth,
-              offsetHeight: mergedOffsetHeight,
-            },
-            target,
-          );
+          onResize(sizeInfo, target);
         });
       }
     }
