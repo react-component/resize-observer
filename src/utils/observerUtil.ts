@@ -5,16 +5,19 @@ export type ResizeListener = (element: Element) => void;
 // =============================== Const ===============================
 const elementListeners = new Map<Element, Set<ResizeListener>>();
 
-// Note: ResizeObserver polyfill not support option to measure border-box resize
-const resizeObserver = new ResizeObserver((entities: ResizeObserverEntry[]) => {
+function onResize(entities: ResizeObserverEntry[]) {
   entities.forEach(entity => {
     const { target } = entity;
     elementListeners.get(target)?.forEach(listener => listener(target));
   });
-});
+}
 
-/** Dev env only */
+// Note: ResizeObserver polyfill not support option to measure border-box resize
+const resizeObserver = new ResizeObserver(onResize);
+
+// Dev env only
 export const _el = process.env.NODE_ENV !== 'production' ? elementListeners : null; // eslint-disable-line
+export const _rs = process.env.NODE_ENV !== 'production' ? onResize : null; // eslint-disable-line
 
 // ============================== Observe ==============================
 export function observe(element: Element, callback: ResizeListener) {

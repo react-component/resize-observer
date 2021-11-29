@@ -1,17 +1,15 @@
 const Enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
-const { _el: elementListeners } = require('../src/utils/observerUtil');
+const { _rs: onResize } = require('../src/utils/observerUtil');
 
 Enzyme.configure({ adapter: new Adapter() });
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
-  findObserver() {
-    return this.find('ResizeObserver');
+  findObserver(index = 0) {
+    return this.find('ResizeObserver').at(index);
   },
-  triggerResize() {
-    const dom = this.findObserver().getDOMNode();
-    elementListeners.get(dom).forEach(listener => {
-      listener(dom);
-    });
+  triggerResize(index = 0) {
+    const target = this.findObserver(index).getDOMNode();
+    onResize([{ target }]);
   },
 });
