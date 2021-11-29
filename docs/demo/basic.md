@@ -1,3 +1,3 @@
-## basic
+## Basic
 
 <code src="../../examples/basic.tsx">

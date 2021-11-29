@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 import 'regenerator-runtime';
 import ResizeObserver from '../src';
 import { spyElementPrototypes } from './utils/domHook';
+import { _el as elementListeners } from '../src/utils/observerUtil';
 
 describe('ResizeObserver', () => {
   let errorSpy;
@@ -55,7 +56,7 @@ describe('ResizeObserver', () => {
       );
 
       expect(errorSpy).toHaveBeenCalledWith(
-        'Warning: Find more than one child node with `children` in ResizeObserver. Will only observe first one.',
+        'Warning: Find more than one child node with `children` in ResizeObserver. Please use ResizeObserver.Collection instead.',
       );
 
       expect(wrapper.find('div').first().key()).toEqual('exist-key');
@@ -97,7 +98,7 @@ describe('ResizeObserver', () => {
 
       wrapper.triggerResize();
       await Promise.resolve();
-      expect(wrapper.instance().currentElement).toBeTruthy();
+      expect(wrapper.exists('DomWrapper')).toBeTruthy(); // Dom exist
       expect(onResize).toHaveBeenCalled();
     });
 
@@ -164,7 +165,7 @@ describe('ResizeObserver', () => {
     );
 
     wrapper.setProps({ disabled: true });
-    expect(wrapper.findObserver().instance().resizeObserver).toBeFalsy();
+    expect(elementListeners.get(wrapper.getDOMNode())).toBeFalsy();
   });
 
   it('unmount to clear', () => {
@@ -173,10 +174,12 @@ describe('ResizeObserver', () => {
         <div />
       </ResizeObserver>,
     );
+    const dom = wrapper.getDOMNode();
+    expect(elementListeners.get(dom)).toBeTruthy();
 
-    const instance = wrapper.findObserver().instance();
+    // Unmount
     wrapper.unmount();
-    expect(instance.resizeObserver).toBeFalsy();
+    expect(elementListeners.get(dom)).toBeFalsy();
   });
 
   describe('work with child type', () => {
