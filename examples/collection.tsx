@@ -4,8 +4,8 @@ import ResizeObserver from '../src';
 
 function randomSize() {
   return {
-    width: 50 + Math.random() * 150,
-    height: 50 + Math.random() * 150,
+    width: Math.round(50 + Math.random() * 150),
+    height: Math.round(50 + Math.random() * 150),
   };
 }
 
@@ -19,6 +19,8 @@ const sharedStyle: React.CSSProperties = {
 export default function App() {
   const [size1, setSize1] = React.useState(randomSize());
   const [size2, setSize2] = React.useState(randomSize());
+
+  console.log('Render:', size1, size2);
 
   return (
     <ResizeObserver.Collection
