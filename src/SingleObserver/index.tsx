@@ -97,14 +97,13 @@ export default function SingleObserver(props: SingleObserverProps) {
   }, [elementRef.current, disabled]);
 
   // ============================ Render ============================
-  if (canRef) {
-    return (
-      <DomWrapper ref={wrapperRef}>
-        {React.cloneElement(children as any, {
-          ref: mergedRef,
-        })}
-      </DomWrapper>
-    );
-  }
-  return children;
+  return (
+    <DomWrapper ref={wrapperRef}>
+      {canRef
+        ? React.cloneElement(children as any, {
+            ref: mergedRef,
+          })
+        : children}
+    </DomWrapper>
+  );
 }
