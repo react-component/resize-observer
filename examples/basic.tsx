@@ -1,6 +1,9 @@
 import '../assets/index.less';
 import React from 'react';
-import ResizeObserver, { ResizeObserverProps } from '../src';
+import type { ResizeObserverProps } from '../src';
+import ResizeObserver from '../src';
+
+const Wrapper = ({ children }: any) => <>{children}</>;
 
 export default function App() {
   const [times, setTimes] = React.useState(0);
@@ -49,7 +52,9 @@ export default function App() {
           <span>Resize times: {times}</span>
         </div>
         <ResizeObserver onResize={onResize} disabled={disabled}>
-          <textarea ref={textareaRef} placeholder="I'm a textarea!" />
+          <Wrapper>
+            <textarea ref={textareaRef} placeholder="I'm a textarea!" />
+          </Wrapper>
         </ResizeObserver>
       </div>
     </React.StrictMode>

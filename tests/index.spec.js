@@ -219,4 +219,22 @@ describe('ResizeObserver', () => {
       expect(errorSpy).not.toHaveBeenCalled();
     });
   });
+
+  it('should listen even not ref-able', async () => {
+    const Wrapper = props => <>{props.children}</>;
+    const onResize = jest.fn();
+
+    const wrapper = mount(
+      <ResizeObserver onResize={onResize}>
+        <Wrapper>
+          <div />
+        </Wrapper>
+      </ResizeObserver>,
+    );
+
+    wrapper.triggerResize();
+    await Promise.resolve();
+
+    expect(onResize).toHaveBeenCalled();
+  });
 });
