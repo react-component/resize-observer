@@ -19,10 +19,10 @@ export default function SingleObserver(props: SingleObserverProps) {
 
   // ============================= Size =============================
   const sizeRef = React.useRef({
-    width: 0,
-    height: 0,
-    offsetWidth: 0,
-    offsetHeight: 0,
+    width: -1,
+    height: -1,
+    offsetWidth: -1,
+    offsetHeight: -1,
   });
 
   // ============================= Ref ==============================
