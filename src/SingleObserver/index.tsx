@@ -7,7 +7,7 @@ import DomWrapper from './DomWrapper';
 import { CollectionContext } from '../Collection';
 
 export interface SingleObserverProps extends ResizeObserverProps {
-  children: React.ReactElement;
+  children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
 }
 
 export default function SingleObserver(props: SingleObserverProps) {
@@ -16,6 +16,10 @@ export default function SingleObserver(props: SingleObserverProps) {
   const wrapperRef = React.useRef<DomWrapper>(null);
 
   const onCollectionResize = React.useContext(CollectionContext);
+
+  // =========================== Children ===========================
+  const isRenderProps = typeof children === 'function';
+  const mergedChildren = isRenderProps ? children(elementRef) : children;
 
   // ============================= Size =============================
   const sizeRef = React.useRef({
@@ -26,8 +30,9 @@ export default function SingleObserver(props: SingleObserverProps) {
   });
 
   // ============================= Ref ==============================
-  const canRef = React.isValidElement(children) && supportRef(children);
-  const originRef: React.Ref<Element> = canRef ? (children as any).ref : null;
+  const canRef =
+    !isRenderProps && React.isValidElement(mergedChildren) && supportRef(mergedChildren);
+  const originRef: React.Ref<Element> = canRef ? (mergedChildren as any).ref : null;
 
   const mergedRef = React.useMemo(
     () => composeRef<Element>(originRef, elementRef),
@@ -100,10 +105,10 @@ export default function SingleObserver(props: SingleObserverProps) {
   return (
     <DomWrapper ref={wrapperRef}>
       {canRef
-        ? React.cloneElement(children as any, {
+        ? React.cloneElement(mergedChildren as any, {
             ref: mergedRef,
           })
-        : children}
+        : mergedChildren}
     </DomWrapper>
   );
 }
