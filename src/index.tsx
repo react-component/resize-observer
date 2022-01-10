@@ -18,7 +18,7 @@ export type OnResize = (size: SizeInfo, element: HTMLElement) => void;
 export interface ResizeObserverProps {
   /** Pass to ResizeObserver.Collection with additional data */
   data?: any;
-  children: React.ReactNode;
+  children: React.ReactNode | ((ref: React.RefObject<any>) => React.ReactElement);
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
   onResize?: OnResize;
@@ -26,7 +26,7 @@ export interface ResizeObserverProps {
 
 function ResizeObserver(props: ResizeObserverProps) {
   const { children } = props;
-  const childNodes = toArray(children);
+  const childNodes = typeof children === 'function' ? [children] : toArray(children);
 
   if (process.env.NODE_ENV !== 'production') {
     if (childNodes.length > 1) {

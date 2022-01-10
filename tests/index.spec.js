@@ -237,4 +237,12 @@ describe('ResizeObserver', () => {
 
     expect(onResize).toHaveBeenCalled();
   });
+
+  it('support renderProps', () => {
+    const wrapper = mount(
+      <ResizeObserver>{ref => <div ref={ref} className="block" />}</ResizeObserver>,
+    );
+
+    expect(wrapper.exists('.block')).toBeTruthy();
+  });
 });
