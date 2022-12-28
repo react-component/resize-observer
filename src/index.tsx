@@ -22,6 +22,8 @@ export interface ResizeObserverProps {
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
   onResize?: OnResize;
+  /** Keep precision on width and height */
+  keepSizePrecision?: boolean;
 }
 
 function ResizeObserver(props: ResizeObserverProps) {
