@@ -11,7 +11,7 @@ export interface SingleObserverProps extends ResizeObserverProps {
 }
 
 export default function SingleObserver(props: SingleObserverProps) {
-  const { children, disabled } = props;
+  const { children, disabled, keepSizePrecision } = props;
   const elementRef = React.useRef<Element>(null);
   const wrapperRef = React.useRef<DomWrapper>(null);
 
@@ -55,16 +55,16 @@ export default function SingleObserver(props: SingleObserverProps) {
      * In most case we just care about element size,
      * let's use `boundary` instead of `contentRect` here to avoid shaking.
      */
-    const fixedWidth = Math.floor(width);
-    const fixedHeight = Math.floor(height);
+    const processedWidth = keepSizePrecision ? width : Math.floor(width);
+    const processedHeight = keepSizePrecision ? height : Math.floor(height);
 
     if (
-      sizeRef.current.width !== fixedWidth ||
-      sizeRef.current.height !== fixedHeight ||
+      sizeRef.current.width !== processedWidth ||
+      sizeRef.current.height !== processedHeight ||
       sizeRef.current.offsetWidth !== offsetWidth ||
       sizeRef.current.offsetHeight !== offsetHeight
     ) {
-      const size = { width: fixedWidth, height: fixedHeight, offsetWidth, offsetHeight };
+      const size = { width: processedWidth, height: processedHeight, offsetWidth, offsetHeight };
       sizeRef.current = size;
 
       // IE is strange, right?
