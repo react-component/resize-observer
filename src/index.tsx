@@ -24,7 +24,7 @@ export interface ResizeObserverProps {
   onResize?: OnResize;
 }
 
-function ResizeObserver(props: ResizeObserverProps, ref: React.Ref<any>) {
+function ResizeObserver(props: ResizeObserverProps, ref: React.Ref<HTMLElement>) {
   const { children } = props;
   const childNodes = typeof children === 'function' ? [children] : toArray(children);
 
