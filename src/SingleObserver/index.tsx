@@ -10,7 +10,7 @@ export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
 }
 
-function SingleObserver(props: SingleObserverProps, ref: React.Ref<any>) {
+function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
   const wrapperRef = React.useRef<DomWrapper>(null);
