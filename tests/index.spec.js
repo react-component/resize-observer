@@ -245,4 +245,17 @@ describe('ResizeObserver', () => {
 
     expect(wrapper.exists('.block')).toBeTruthy();
   });
+
+  it('ref-able', () => {
+    const domRef = React.createRef();
+
+    const wrapper = mount(
+      <ResizeObserver ref={domRef}>
+        <div className="block" />
+      </ResizeObserver>,
+    );
+
+    expect(domRef.current instanceof HTMLDivElement).toBeTruthy();
+    expect(domRef.current).toBe(wrapper.find('div.block').getDOMNode());
+  });
 });
