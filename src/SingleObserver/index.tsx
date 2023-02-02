@@ -10,7 +10,7 @@ export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
 }
 
-export default function SingleObserver(props: SingleObserverProps) {
+function SingleObserver(props: SingleObserverProps, ref: React.Ref<any>) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
   const wrapperRef = React.useRef<DomWrapper>(null);
@@ -38,6 +38,11 @@ export default function SingleObserver(props: SingleObserverProps) {
     () => composeRef<Element>(originRef, elementRef),
     [originRef, elementRef],
   );
+
+  const getDom = () =>
+    findDOMNode<HTMLElement>(elementRef.current) || findDOMNode<HTMLElement>(wrapperRef.current);
+
+  React.useImperativeHandle(ref, () => getDom());
 
   // =========================== Observe ============================
   const propsRef = React.useRef<SingleObserverProps>(props);
@@ -91,8 +96,7 @@ export default function SingleObserver(props: SingleObserverProps) {
 
   // Dynamic observe
   React.useEffect(() => {
-    const currentElement: HTMLElement =
-      findDOMNode(elementRef.current) || findDOMNode(wrapperRef.current);
+    const currentElement: HTMLElement = getDom();
 
     if (currentElement && !disabled) {
       observe(currentElement, onInternalResize);
@@ -112,3 +116,11 @@ export default function SingleObserver(props: SingleObserverProps) {
     </DomWrapper>
   );
 }
+
+const RefSingleObserver = React.forwardRef(SingleObserver);
+
+if (process.env.NODE_ENV !== 'production') {
+  RefSingleObserver.displayName = 'SingleObserver';
+}
+
+export default RefSingleObserver;

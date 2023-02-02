@@ -24,7 +24,7 @@ export interface ResizeObserverProps {
   onResize?: OnResize;
 }
 
-function ResizeObserver(props: ResizeObserverProps) {
+function ResizeObserver(props: ResizeObserverProps, ref: React.Ref<any>) {
   const { children } = props;
   const childNodes = typeof children === 'function' ? [children] : toArray(children);
 
@@ -42,13 +42,23 @@ function ResizeObserver(props: ResizeObserverProps) {
   return childNodes.map((child, index) => {
     const key = child?.key || `${INTERNAL_PREFIX_KEY}-${index}`;
     return (
-      <SingleObserver {...props} key={key}>
+      <SingleObserver {...props} key={key} ref={index === 0 ? ref : undefined}>
         {child}
       </SingleObserver>
     );
   }) as any as React.ReactElement;
 }
 
-ResizeObserver.Collection = Collection;
+const RefResizeObserver = React.forwardRef(ResizeObserver) as React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<ResizeObserverProps> & React.RefAttributes<any>
+> & {
+  Collection: typeof Collection;
+};
 
-export default ResizeObserver;
+if (process.env.NODE_ENV !== 'production') {
+  RefResizeObserver.displayName = 'ResizeObserver';
+}
+
+RefResizeObserver.Collection = Collection;
+
+export default RefResizeObserver;
