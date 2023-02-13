@@ -6,6 +6,12 @@ import { Collection } from './Collection';
 
 const INTERNAL_PREFIX_KEY = 'rc-observer-key';
 
+import { _rs } from './utils/observerUtil';
+export {
+  /** @private Test only for mock trigger resize event */
+  _rs,
+};
+
 export interface SizeInfo {
   width: number;
   height: number;
