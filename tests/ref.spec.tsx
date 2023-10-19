@@ -24,4 +24,22 @@ describe('ResizeObserver.ref', () => {
 
     expect(resizeRef.current).toEqual(container.querySelector('.little'));
   });
+
+  it('ignore invalidate forward', () => {
+    const My = React.forwardRef((_, ref) => {
+      React.useImperativeHandle(ref, () => 233);
+
+      return <div className="little" />;
+    });
+
+    const resizeRef = React.createRef<HTMLDivElement>();
+
+    const { container } = render(
+      <ResizeObserver ref={resizeRef}>
+        <My />
+      </ResizeObserver>,
+    );
+
+    expect(resizeRef.current).toEqual(container.querySelector('.little'));
+  });
 });

@@ -38,7 +38,10 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
 
   const getDom = () =>
     findDOMNode<HTMLElement>(elementRef.current) ||
-    findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement) ||
+    // Support `nativeElement` format
+    (elementRef.current && typeof elementRef.current === 'object'
+      ? findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement)
+      : null) ||
     findDOMNode<HTMLElement>(wrapperRef.current);
 
   React.useImperativeHandle(ref, () => getDom());
