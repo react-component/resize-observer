@@ -1,10 +1,10 @@
-import { composeRef, supportRef, useComposeRef } from 'rc-util/lib/ref';
-import * as React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { observe, unobserve } from '../utils/observerUtil';
+import { supportRef, useComposeRef } from 'rc-util/lib/ref';
+import * as React from 'react';
 import type { ResizeObserverProps } from '..';
-import DomWrapper from './DomWrapper';
 import { CollectionContext } from '../Collection';
+import { observe, unobserve } from '../utils/observerUtil';
+import DomWrapper from './DomWrapper';
 
 export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
