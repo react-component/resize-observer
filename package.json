@@ -47,6 +47,8 @@
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {
+    "@rc-component/father-plugin": "^1.0.0",
+    "@testing-library/react": "^12.1.5",
     "@types/classnames": "^2.2.9",
     "@types/jest": "^26.0.6",
     "@types/react": "^16.9.2",
@@ -68,8 +70,7 @@
     "rc-test": "^7.0.15",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "regenerator-runtime": "^0.13.7",
-    "@rc-component/father-plugin": "^1.0.0"
+    "regenerator-runtime": "^0.13.7"
   },
   "peerDependencies": {
     "react": ">=16.9.0",

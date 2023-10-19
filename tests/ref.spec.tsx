@@ -1,17 +1,27 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { mount } from 'enzyme';
 import ResizeObserver from '../src';
-import { _el as elementListeners } from '../src/utils/observerUtil';
 
 describe('ResizeObserver.ref', () => {
   it('support nativeElement', () => {
-    const wrapper = mount(
-      <ResizeObserver>
-        <div />
+    const My = React.forwardRef((_, ref) => {
+      const divRef = React.useRef<HTMLDivElement>(null);
+
+      React.useImperativeHandle(ref, () => ({
+        nativeElement: divRef.current,
+      }));
+
+      return <div ref={divRef} className="little" />;
+    });
+
+    const resizeRef = React.createRef<HTMLDivElement>();
+
+    const { container } = render(
+      <ResizeObserver ref={resizeRef}>
+        <My />
       </ResizeObserver>,
     );
 
-    wrapper.setProps({ disabled: true });
-    expect(elementListeners.get(wrapper.getDOMNode())).toBeFalsy();
+    expect(resizeRef.current).toEqual(container.querySelector('.little'));
   });
 });
