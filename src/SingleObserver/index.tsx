@@ -1,4 +1,4 @@
-import { composeRef, supportRef } from 'rc-util/lib/ref';
+import { composeRef, supportRef, useComposeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { observe, unobserve } from '../utils/observerUtil';
@@ -34,13 +34,12 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
     !isRenderProps && React.isValidElement(mergedChildren) && supportRef(mergedChildren);
   const originRef: React.Ref<Element> = canRef ? (mergedChildren as any).ref : null;
 
-  const mergedRef = React.useMemo(
-    () => composeRef<Element>(originRef, elementRef),
-    [originRef, elementRef],
-  );
+  const mergedRef = useComposeRef(originRef, elementRef);
 
   const getDom = () =>
-    findDOMNode<HTMLElement>(elementRef.current) || findDOMNode<HTMLElement>(wrapperRef.current);
+    findDOMNode<HTMLElement>(elementRef.current) ||
+    findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement) ||
+    findDOMNode<HTMLElement>(wrapperRef.current);
 
   React.useImperativeHandle(ref, () => getDom());
 
