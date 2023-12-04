@@ -1,4 +1,3 @@
-.storybook
 node_modules
 lib
 es
@@ -8,5 +7,4 @@ package-lock.json
 public
 .site
 _site
-.umi
 .doc
