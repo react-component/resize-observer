@@ -6,10 +6,6 @@ export default defineConfig({
     name: 'resize-observer',
     logo: 'https://avatars0.githubusercontent.com/u/9441414?s=200&v=4',
   },
-  exportStatic: {},
-  outputPath: '.doc',
-  base: '/resize-observer/',
-  publicPath: '/resize-observer/',
   styles: [
     `
       section.dumi-default-header-left  {
