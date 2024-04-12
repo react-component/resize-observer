@@ -33,3 +33,5 @@ coverage/
 .dumi/tmp-test
 .dumi/tmp-production
 .env.local
+.node
+dist/
