@@ -35,3 +35,5 @@ coverage/
 .env.local
 .node
 dist/
+
+bun.lockb
