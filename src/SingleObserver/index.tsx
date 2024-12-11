@@ -1,5 +1,5 @@
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { supportRef, useComposeRef } from 'rc-util/lib/ref';
+import { supportRef, useComposeRef, getNodeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import type { ResizeObserverProps } from '..';
 import { CollectionContext } from '../Collection';
@@ -32,7 +32,7 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   // ============================= Ref ==============================
   const canRef =
     !isRenderProps && React.isValidElement(mergedChildren) && supportRef(mergedChildren);
-  const originRef: React.Ref<Element> = canRef ? (mergedChildren as any).ref : null;
+  const originRef: React.Ref<Element> = canRef ? getNodeRef(mergedChildren) : null;
 
   const mergedRef = useComposeRef(originRef, elementRef);
 
