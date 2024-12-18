@@ -1,3 +1,5 @@
+import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
+import { supportRef, useComposeRef, getNodeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import type { ResizeObserverProps } from '..';
 import { CollectionContext } from '../Collection';
@@ -11,7 +13,7 @@ export interface SingleObserverProps extends ResizeObserverProps {
 function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
-  const wrapperRef = React.useRef<Text|Element|null>(null);
+  const wrapperRef = React.useRef<Element|Text|null>(null);
 
   const onCollectionResize = React.useContext(CollectionContext);
 
@@ -28,8 +30,19 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   });
 
   // ============================= Ref ==============================
+  const canRef =
+    !isRenderProps && React.isValidElement(mergedChildren) && supportRef(mergedChildren);
+  const originRef: React.Ref<Element> = canRef ? getNodeRef(mergedChildren) : null;
 
-  const getDom = () => wrapperRef.current;
+  const mergedRef = useComposeRef(originRef, elementRef);
+
+  const getDom = () =>
+    findDOMNode<HTMLElement>(elementRef.current) ||
+    // Support `nativeElement` format
+    (elementRef.current && typeof elementRef.current === 'object'
+      ? findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement)
+      : null) ||
+    wrapperRef.current;
 
   React.useImperativeHandle(ref, () => getDom());
 
@@ -95,9 +108,14 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   }, [elementRef.current, disabled]);
 
   // ============================ Render ============================
+if(canRef){
+   return  React.cloneElement(mergedChildren as any, {
+            ref: mergedRef,
+          })
+}
   return (
     <DomRef ref={wrapperRef}>
-      {mergedChildren}
+      { mergedChildren}
     </DomRef>
   );
 }
