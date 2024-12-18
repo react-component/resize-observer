@@ -1,10 +1,8 @@
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { supportRef, useComposeRef, getNodeRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import type { ResizeObserverProps } from '..';
 import { CollectionContext } from '../Collection';
 import { observe, unobserve } from '../utils/observerUtil';
-import DomWrapper from './DomWrapper';
+import DomRef from './Ref';
 
 export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
@@ -13,7 +11,7 @@ export interface SingleObserverProps extends ResizeObserverProps {
 function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
-  const wrapperRef = React.useRef<DomWrapper>(null);
+  const wrapperRef = React.useRef<Text|Element|null>(null);
 
   const onCollectionResize = React.useContext(CollectionContext);
 
@@ -30,19 +28,8 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   });
 
   // ============================= Ref ==============================
-  const canRef =
-    !isRenderProps && React.isValidElement(mergedChildren) && supportRef(mergedChildren);
-  const originRef: React.Ref<Element> = canRef ? getNodeRef(mergedChildren) : null;
 
-  const mergedRef = useComposeRef(originRef, elementRef);
-
-  const getDom = () =>
-    findDOMNode<HTMLElement>(elementRef.current) ||
-    // Support `nativeElement` format
-    (elementRef.current && typeof elementRef.current === 'object'
-      ? findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement)
-      : null) ||
-    findDOMNode<HTMLElement>(wrapperRef.current);
+  const getDom = () => wrapperRef.current;
 
   React.useImperativeHandle(ref, () => getDom());
 
@@ -109,13 +96,9 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
 
   // ============================ Render ============================
   return (
-    <DomWrapper ref={wrapperRef}>
-      {canRef
-        ? React.cloneElement(mergedChildren as any, {
-            ref: mergedRef,
-          })
-        : mergedChildren}
-    </DomWrapper>
+    <DomRef ref={wrapperRef}>
+      {mergedChildren}
+    </DomRef>
   );
 }
 
