@@ -1,6 +1,6 @@
 {
   "name": "rc-resize-observer",
-  "version": "1.4.1",
+  "version": "1.4.3",
   "description": "Resize observer for React",
   "keywords": [
     "react",
@@ -14,8 +14,7 @@
     "assets/*.css",
     "assets/*.less",
     "es",
-    "lib",
-    "dist"
+    "lib"
   ],
   "homepage": "https://react-component.github.io/resize-observer",
   "repository": {
@@ -30,7 +29,7 @@
     "start": "dumi dev",
     "build": "dumi build",
     "compile": "father build && lessc assets/index.less assets/index.css",
-    "deploy": "UMI_ENV=gh npm run build && gh-pages -d .doc",
+    "deploy": "UMI_ENV=gh npm run build && gh-pages -d dist",
     "gh-pages": "npm run deploy",
     "prepare": "dumi setup",
     "prepublishOnly": "npm run compile && np --no-cleanup --yolo --no-publish",
