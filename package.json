@@ -14,8 +14,7 @@
     "assets/*.css",
     "assets/*.less",
     "es",
-    "lib",
-    "dist"
+    "lib"
   ],
   "homepage": "https://react-component.github.io/resize-observer",
   "repository": {
