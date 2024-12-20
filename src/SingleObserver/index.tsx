@@ -4,7 +4,7 @@ import * as React from 'react';
 import type { ResizeObserverProps } from '..';
 import { CollectionContext } from '../Collection';
 import { observe, unobserve } from '../utils/observerUtil';
-import DomWrapper from './DomWrapper';
+import DomRef from './Ref';
 
 export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
@@ -13,7 +13,7 @@ export interface SingleObserverProps extends ResizeObserverProps {
 function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
-  const wrapperRef = React.useRef<DomWrapper>(null);
+  const wrapperRef = React.useRef<Element|Text|null>(null);
 
   const onCollectionResize = React.useContext(CollectionContext);
 
@@ -42,7 +42,7 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
     (elementRef.current && typeof elementRef.current === 'object'
       ? findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement)
       : null) ||
-    findDOMNode<HTMLElement>(wrapperRef.current);
+    wrapperRef.current;
 
   React.useImperativeHandle(ref, () => getDom());
 
@@ -108,14 +108,15 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   }, [elementRef.current, disabled]);
 
   // ============================ Render ============================
-  return (
-    <DomWrapper ref={wrapperRef}>
-      {canRef
-        ? React.cloneElement(mergedChildren as any, {
+if(canRef){
+   return  React.cloneElement(mergedChildren as any, {
             ref: mergedRef,
           })
-        : mergedChildren}
-    </DomWrapper>
+}
+  return (
+    <DomRef ref={wrapperRef}>
+      { mergedChildren}
+    </DomRef>
   );
 }
 
