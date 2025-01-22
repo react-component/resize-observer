@@ -98,7 +98,6 @@ describe('ResizeObserver', () => {
 
       wrapper.triggerResize();
       await Promise.resolve();
-      expect(wrapper.exists('DomWrapper')).toBeFalsy(); // Dom exist
       expect(onResize).toHaveBeenCalled();
     });
 

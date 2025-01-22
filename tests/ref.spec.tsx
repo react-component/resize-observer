@@ -34,12 +34,33 @@ describe('ResizeObserver.ref', () => {
 
     const resizeRef = React.createRef<HTMLDivElement>();
 
-   render(
+    render(
       <ResizeObserver ref={resizeRef}>
         <My />
       </ResizeObserver>,
     );
 
     expect(resizeRef.current).toBeNull();
+  });
+
+  it('should support nativeElement', () => {
+    const My = React.forwardRef((_, ref) => {
+      const domRef = React.useRef<HTMLDivElement>(null);
+      React.useImperativeHandle(ref, () => ({
+        nativeElement: domRef.current,
+      }));
+
+      return <div ref={domRef} className="little" />;
+    });
+
+    const resizeRef = React.createRef<HTMLDivElement>();
+
+    const { container } = render(
+      <ResizeObserver ref={resizeRef}>
+        <My />
+      </ResizeObserver>,
+    );
+
+    expect(resizeRef.current).toBe(container.querySelector('.little'));
   });
 });
