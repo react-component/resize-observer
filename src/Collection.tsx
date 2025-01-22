@@ -14,13 +14,13 @@ export interface ResizeInfo {
 export interface CollectionProps {
   /** Trigger when some children ResizeObserver changed. Collect by frame render level */
   onBatchResize?: (resizeInfo: ResizeInfo[]) => void;
-  children?: React.ReactNode;
 }
 
 /**
  * Collect all the resize event from children ResizeObserver
  */
-export function Collection({ children, onBatchResize }: CollectionProps) {
+export const Collection: React.FC<React.PropsWithChildren<CollectionProps>> = props => {
+  const { children, onBatchResize } = props;
   const resizeIdRef = React.useRef(0);
   const resizeInfosRef = React.useRef<ResizeInfo[]>([]);
 
@@ -51,4 +51,4 @@ export function Collection({ children, onBatchResize }: CollectionProps) {
   );
 
   return <CollectionContext.Provider value={onResize}>{children}</CollectionContext.Provider>;
-}
+};

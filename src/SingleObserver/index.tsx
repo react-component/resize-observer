@@ -1,5 +1,5 @@
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { supportRef, useComposeRef, getNodeRef } from 'rc-util/lib/ref';
+import findDOMNode from '@rc-component/util/lib/Dom/findDOMNode';
+import { supportRef, useComposeRef, getNodeRef } from '@rc-component/util/lib/ref';
 import * as React from 'react';
 import type { ResizeObserverProps } from '..';
 import { CollectionContext } from '../Collection';
@@ -10,7 +10,10 @@ export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
 }
 
-function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>) {
+const SingleObserver: React.ForwardRefRenderFunction<HTMLElement, SingleObserverProps> = (
+  props,
+  ref,
+) => {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
   const wrapperRef = React.useRef<DomWrapper>(null);
@@ -32,7 +35,8 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   // ============================= Ref ==============================
   const canRef =
     !isRenderProps && React.isValidElement(mergedChildren) && supportRef(mergedChildren);
-  const originRef: React.Ref<Element> = canRef ? getNodeRef(mergedChildren) : null;
+
+  const originRef: React.Ref<Element> = canRef ? getNodeRef(mergedChildren as any) : null;
 
   const mergedRef = useComposeRef(originRef, elementRef);
 
@@ -42,7 +46,7 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
     (elementRef.current && typeof elementRef.current === 'object'
       ? findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement)
       : null) ||
-    findDOMNode<HTMLElement>(wrapperRef.current);
+    findDOMNode<HTMLElement>(wrapperRef.current as any);
 
   React.useImperativeHandle(ref, () => getDom());
 
@@ -110,14 +114,10 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   // ============================ Render ============================
   return (
     <DomWrapper ref={wrapperRef}>
-      {canRef
-        ? React.cloneElement(mergedChildren as any, {
-            ref: mergedRef,
-          })
-        : mergedChildren}
+      {canRef ? React.cloneElement<any>(mergedChildren, { ref: mergedRef }) : mergedChildren}
     </DomWrapper>
   );
-}
+};
 
 const RefSingleObserver = React.forwardRef(SingleObserver);
 

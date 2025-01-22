@@ -1,5 +1,3 @@
-import ResizeObserver from 'resize-observer-polyfill';
-
 export type ResizeListener = (element: Element) => void;
 
 // =============================== Const ===============================
@@ -12,8 +10,7 @@ function onResize(entities: ResizeObserverEntry[]) {
   });
 }
 
-// Note: ResizeObserver polyfill not support option to measure border-box resize
-const resizeObserver = new ResizeObserver(onResize);
+const resizeObserver = 'ResizeObserver' in window ? new ResizeObserver(onResize) : undefined;
 
 // Dev env only
 export const _el = process.env.NODE_ENV !== 'production' ? elementListeners : null; // eslint-disable-line
@@ -25,7 +22,6 @@ export function observe(element: Element, callback: ResizeListener) {
     elementListeners.set(element, new Set());
     resizeObserver.observe(element);
   }
-
   elementListeners.get(element).add(callback);
 }
 

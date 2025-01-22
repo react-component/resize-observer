@@ -1,6 +1,6 @@
 import * as React from 'react';
-import toArray from 'rc-util/lib/Children/toArray';
-import { warning } from 'rc-util/lib/warning';
+import toArray from '@rc-component/util/lib/Children/toArray';
+import { warning } from '@rc-component/util/lib/warning';
 import SingleObserver from './SingleObserver';
 import { Collection } from './Collection';
 
@@ -30,9 +30,12 @@ export interface ResizeObserverProps {
   onResize?: OnResize;
 }
 
-function ResizeObserver(props: ResizeObserverProps, ref: React.Ref<HTMLElement>) {
+const ResizeObserver: React.ForwardRefRenderFunction<HTMLElement, ResizeObserverProps> = (
+  props,
+  ref,
+) => {
   const { children } = props;
-  const childNodes = typeof children === 'function' ? [children] : toArray(children);
+  const childNodes = typeof children === 'function' ? [children] : toArray(children as any);
 
   if (process.env.NODE_ENV !== 'production') {
     if (childNodes.length > 1) {
@@ -52,8 +55,8 @@ function ResizeObserver(props: ResizeObserverProps, ref: React.Ref<HTMLElement>)
         {child}
       </SingleObserver>
     );
-  }) as any as React.ReactElement;
-}
+  });
+};
 
 const RefResizeObserver = React.forwardRef(ResizeObserver) as React.ForwardRefExoticComponent<
   React.PropsWithoutRef<ResizeObserverProps> & React.RefAttributes<any>
