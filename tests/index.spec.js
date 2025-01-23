@@ -98,7 +98,6 @@ describe('ResizeObserver', () => {
 
       wrapper.triggerResize();
       await Promise.resolve();
-      expect(wrapper.exists('DomWrapper')).toBeTruthy(); // Dom exist
       expect(onResize).toHaveBeenCalled();
     });
 
@@ -220,7 +219,7 @@ describe('ResizeObserver', () => {
     });
   });
 
-  it('should listen even not ref-able', async () => {
+  it('should not listen even not ref-able', async () => {
     const Wrapper = props => <>{props.children}</>;
     const onResize = jest.fn();
 
@@ -235,7 +234,7 @@ describe('ResizeObserver', () => {
     wrapper.triggerResize();
     await Promise.resolve();
 
-    expect(onResize).toHaveBeenCalled();
+    expect(onResize).not.toHaveBeenCalled();
   });
 
   it('support renderProps', () => {

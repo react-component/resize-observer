@@ -1,10 +1,9 @@
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { supportRef, useComposeRef, getNodeRef } from 'rc-util/lib/ref';
+import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
+import { supportRef, useComposeRef, getNodeRef } from '@rc-component/util/lib/ref';
 import * as React from 'react';
 import type { ResizeObserverProps } from '..';
 import { CollectionContext } from '../Collection';
 import { observe, unobserve } from '../utils/observerUtil';
-import DomWrapper from './DomWrapper';
 
 export interface SingleObserverProps extends ResizeObserverProps {
   children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
@@ -13,7 +12,6 @@ export interface SingleObserverProps extends ResizeObserverProps {
 function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>) {
   const { children, disabled } = props;
   const elementRef = React.useRef<Element>(null);
-  const wrapperRef = React.useRef<DomWrapper>(null);
 
   const onCollectionResize = React.useContext(CollectionContext);
 
@@ -36,15 +34,12 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
 
   const mergedRef = useComposeRef(originRef, elementRef);
 
-  const getDom = () =>
-    findDOMNode<HTMLElement>(elementRef.current) ||
-    // Support `nativeElement` format
-    (elementRef.current && typeof elementRef.current === 'object'
-      ? findDOMNode<HTMLElement>((elementRef.current as any)?.nativeElement)
-      : null) ||
-    findDOMNode<HTMLElement>(wrapperRef.current);
+  const getDomElement = () => {
+    return getDOM( elementRef.current ) as HTMLElement
+  }
+  
 
-  React.useImperativeHandle(ref, () => getDom());
+  React.useImperativeHandle(ref, () => getDomElement());
 
   // =========================== Observe ============================
   const propsRef = React.useRef<SingleObserverProps>(props);
@@ -98,7 +93,7 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
 
   // Dynamic observe
   React.useEffect(() => {
-    const currentElement: HTMLElement = getDom();
+    const currentElement: HTMLElement = getDomElement();
 
     if (currentElement && !disabled) {
       observe(currentElement, onInternalResize);
@@ -109,13 +104,11 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
 
   // ============================ Render ============================
   return (
-    <DomWrapper ref={wrapperRef}>
-      {canRef
+      canRef
         ? React.cloneElement(mergedChildren as any, {
             ref: mergedRef,
           })
-        : mergedChildren}
-    </DomWrapper>
+        : mergedChildren
   );
 }
 
