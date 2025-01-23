@@ -1,6 +1,6 @@
 {
-  "name": "rc-resize-observer",
-  "version": "1.4.3",
+  "name": "@rc-component/resize-observer",
+  "version": "1.0.0-0",
   "description": "Resize observer for React",
   "keywords": [
     "react",
@@ -32,7 +32,7 @@
     "deploy": "UMI_ENV=gh npm run build && gh-pages -d dist",
     "gh-pages": "npm run deploy",
     "prepare": "dumi setup",
-    "prepublishOnly": "npm run compile && np --no-cleanup --yolo --no-publish",
+    "prepublishOnly": "npm run compile && rc-np",
     "postpublish": "npm run gh-pages",
     "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
     "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
@@ -41,13 +41,11 @@
     "now-build": "npm run build"
   },
   "dependencies": {
-    "@babel/runtime": "^7.20.7",
     "classnames": "^2.2.1",
-    "@rc-component/util": "^1.2.0",
-    "resize-observer-polyfill": "^1.5.1"
+    "@rc-component/util": "^1.2.0"
   },
   "devDependencies": {
-    "@rc-component/father-plugin": "^1.0.0",
+    "@rc-component/father-plugin": "^2.0.2",
     "@testing-library/react": "^12.1.5",
     "@types/jest": "^29.5.10",
     "@types/react-dom": "^18.0.11",
@@ -63,7 +61,7 @@
     "gh-pages": "^6.1.0",
     "glob": "^7.1.6",
     "less": "^4.1.3",
-    "np": "^9.0.0",
+    "@rc-component/np": "^1.0.0",
     "prettier": "^3.2.5",
     "pretty-quick": "^4.0.0",
     "rc-test": "^7.0.15",
