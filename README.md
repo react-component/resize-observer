@@ -15,7 +15,7 @@ Resize observer for React.
 
 ## Live Demo
 
-https://react-component.github.io/resize-observer/
+https://resize-observer-react-component.vercel.app/
 
 ## Install
 
