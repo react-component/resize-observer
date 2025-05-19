@@ -48,14 +48,14 @@ const ResizeObserver: React.ForwardRefRenderFunction<HTMLElement, ResizeObserver
     }
   }
 
-  return childNodes.map<React.ReactElement<any>>((child, index) => {
+  return childNodes.map((child, index) => {
     const key = child?.key || `${INTERNAL_PREFIX_KEY}-${index}`;
     return (
       <SingleObserver {...props} key={key} ref={index === 0 ? ref : undefined}>
         {child}
       </SingleObserver>
     );
-  });
+  }) as unknown as React.ReactElement<any>;
 };
 
 const RefResizeObserver = React.forwardRef(ResizeObserver) as React.ForwardRefExoticComponent<
