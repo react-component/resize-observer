@@ -1,8 +1,6 @@
 const Enzyme = require('enzyme');
-const Adapter = require('enzyme-adapter-react-16');
-const { _rs: onResize } = require('../src/utils/observerUtil');
 
-Enzyme.configure({ adapter: new Adapter() });
+const { _rs: onResize } = require('../src/utils/observerUtil');
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
   findObserver(index = 0) {
