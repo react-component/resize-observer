@@ -107,7 +107,11 @@ const SingleObserver: React.ForwardRefRenderFunction<HTMLElement, SingleObserver
   }, [elementRef.current, disabled]);
 
   // ============================ Render ============================
-  return canRef ? React.cloneElement<any>(mergedChildren, { ref: mergedRef }) : mergedChildren;
+  return canRef ? (
+    React.cloneElement<any>(mergedChildren, { ref: mergedRef })
+  ) : (
+    <>{mergedChildren}</>
+  );
 };
 
 const RefSingleObserver = React.forwardRef(SingleObserver);
