@@ -6,11 +6,15 @@ import { CollectionContext } from '../Collection';
 import { observe, unobserve } from '../utils/observerUtil';
 
 export interface SingleObserverProps extends ResizeObserverProps {
-  children: React.ReactElement | ((ref: React.RefObject<Element>) => React.ReactElement);
+  //
 }
 
-function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>) {
+const SingleObserver: React.ForwardRefRenderFunction<HTMLElement, SingleObserverProps> = (
+  props,
+  ref,
+) => {
   const { children, disabled } = props;
+
   const elementRef = React.useRef<Element>(null);
 
   const onCollectionResize = React.useContext(CollectionContext);
@@ -29,15 +33,15 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
 
   // ============================= Ref ==============================
   const canRef =
-    !isRenderProps && React.isValidElement(mergedChildren) && supportRef(mergedChildren);
-  const originRef: React.Ref<Element> = canRef ? getNodeRef(mergedChildren) : null;
+    !isRenderProps && React.isValidElement<any>(mergedChildren) && supportRef(mergedChildren);
+
+  const originRef = canRef ? getNodeRef(mergedChildren as any) : null;
 
   const mergedRef = useComposeRef(originRef, elementRef);
 
   const getDomElement = () => {
-    return getDOM( elementRef.current ) as HTMLElement
-  }
-  
+    return getDOM(elementRef.current) as HTMLElement;
+  };
 
   React.useImperativeHandle(ref, () => getDomElement());
 
@@ -93,7 +97,7 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
 
   // Dynamic observe
   React.useEffect(() => {
-    const currentElement: HTMLElement = getDomElement();
+    const currentElement = getDomElement();
 
     if (currentElement && !disabled) {
       observe(currentElement, onInternalResize);
@@ -103,14 +107,8 @@ function SingleObserver(props: SingleObserverProps, ref: React.Ref<HTMLElement>)
   }, [elementRef.current, disabled]);
 
   // ============================ Render ============================
-  return (
-      canRef
-        ? React.cloneElement(mergedChildren as any, {
-            ref: mergedRef,
-          })
-        : mergedChildren
-  );
-}
+  return canRef ? React.cloneElement<any>(mergedChildren, { ref: mergedRef }) : mergedChildren;
+};
 
 const RefSingleObserver = React.forwardRef(SingleObserver);
 

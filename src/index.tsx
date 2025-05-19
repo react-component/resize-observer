@@ -24,15 +24,18 @@ export type OnResize = (size: SizeInfo, element: HTMLElement) => void;
 export interface ResizeObserverProps {
   /** Pass to ResizeObserver.Collection with additional data */
   data?: any;
-  children: React.ReactNode | ((ref: React.RefObject<any>) => React.ReactElement);
+  children: React.ReactNode | ((ref: React.RefObject<any>) => React.ReactElement<any>);
   disabled?: boolean;
   /** Trigger if element resized. Will always trigger when first time render. */
   onResize?: OnResize;
 }
 
-function ResizeObserver(props: ResizeObserverProps, ref: React.Ref<HTMLElement>) {
+const ResizeObserver: React.ForwardRefRenderFunction<HTMLElement, ResizeObserverProps> = (
+  props,
+  ref,
+) => {
   const { children } = props;
-  const childNodes = typeof children === 'function' ? [children] : toArray(children);
+  const childNodes = typeof children === 'function' ? [children] : toArray(children as any);
 
   if (process.env.NODE_ENV !== 'production') {
     if (childNodes.length > 1) {
@@ -45,15 +48,15 @@ function ResizeObserver(props: ResizeObserverProps, ref: React.Ref<HTMLElement>)
     }
   }
 
-  return childNodes.map((child, index) => {
+  return childNodes.map<React.ReactElement<any>>((child, index) => {
     const key = child?.key || `${INTERNAL_PREFIX_KEY}-${index}`;
     return (
       <SingleObserver {...props} key={key} ref={index === 0 ? ref : undefined}>
         {child}
       </SingleObserver>
     );
-  }) as any as React.ReactElement;
-}
+  });
+};
 
 const RefResizeObserver = React.forwardRef(ResizeObserver) as React.ForwardRefExoticComponent<
   React.PropsWithoutRef<ResizeObserverProps> & React.RefAttributes<any>
