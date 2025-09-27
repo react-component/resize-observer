@@ -4,7 +4,6 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "jsx": "react",
-    "types": ["node"],
     "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
