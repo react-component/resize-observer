@@ -12,6 +12,8 @@ export {
   _rs,
 };
 
+export { default as useResizeObserver } from './useResizeObserver';
+
 export interface SizeInfo {
   width: number;
   height: number;
