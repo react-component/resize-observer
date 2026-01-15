@@ -51,7 +51,7 @@
     "@types/node": "^24.5.2",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "@umijs/fabric": "^2.0.9",
+    "@umijs/fabric": "^4.0.0",
     "cheerio": "1.0.0-rc.12",
     "coveralls": "^3.0.6",
     "cross-env": "^7.0.2",
@@ -68,15 +68,16 @@
     "rc-test": "^7.0.15",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "regenerator-runtime": "^0.14.0"
+    "regenerator-runtime": "^0.14.0",
+    "eslint": "8.x"
   },
   "peerDependencies": {
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
   "resolutions": {
-		"@types/minimatch": "5.1.2"
-	},
+    "@types/minimatch": "5.1.2"
+  },
   "cnpm": {
     "mode": "npm"
   },

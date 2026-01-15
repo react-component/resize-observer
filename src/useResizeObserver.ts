@@ -75,5 +75,5 @@ export default function useResizeObserver(
         unobserve(target, onInternalResize);
       }
     };
-  }, [enabled, getTarget]);
+  }, [enabled]);
 }

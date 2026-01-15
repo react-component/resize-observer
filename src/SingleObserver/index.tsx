@@ -1,7 +1,7 @@
 import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import { supportRef, useComposeRef, getNodeRef } from '@rc-component/util/lib/ref';
 import * as React from 'react';
-import type { ResizeObserverProps, SizeInfo } from '..';
+import type { ResizeObserverProps } from '..';
 import { CollectionContext } from '../Collection';
 import useResizeObserver from '../useResizeObserver';
 
