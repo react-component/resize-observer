@@ -5,7 +5,7 @@ import { useEvent } from '@rc-component/util';
 
 export default function useResizeObserver(
   enabled: boolean,
-  getTarget: () => HTMLElement,
+  getTarget: HTMLElement | (() => HTMLElement),
   onDelayResize?: OnResize,
   onSyncResize?: OnResize,
 ) {
@@ -63,8 +63,9 @@ export default function useResizeObserver(
   });
 
   // Dynamic observe
+  const isFuncTarget = typeof getTarget === 'function';
   React.useEffect(() => {
-    const target = getTarget();
+    const target = isFuncTarget ? getTarget() : getTarget;
 
     if (target && enabled) {
       observe(target, onInternalResize);
@@ -75,5 +76,9 @@ export default function useResizeObserver(
         unobserve(target, onInternalResize);
       }
     };
-  }, [enabled]);
+  }, [
+    enabled,
+    // When is function, no need to watch it
+    isFuncTarget ? 0 : getTarget,
+  ]);
 }
