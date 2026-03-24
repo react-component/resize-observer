@@ -64,11 +64,15 @@ export default function useResizeObserver(
 
   // Dynamic observe
   const isFuncTarget = typeof getTarget === 'function';
+  const funcTargetIdRef = React.useRef(0);
+
   React.useEffect(() => {
     const target = isFuncTarget ? getTarget() : getTarget;
 
     if (target && enabled) {
       observe(target, onInternalResize);
+    } else if (enabled && isFuncTarget) {
+      funcTargetIdRef.current += 1;
     }
 
     return () => {
@@ -78,7 +82,8 @@ export default function useResizeObserver(
     };
   }, [
     enabled,
-    // When is function, no need to watch it
-    isFuncTarget ? 0 : getTarget,
+    // If function target resolves after a parent render, the bumped ref value
+    // lets the next render re-run this effect without watching the function identity.
+    isFuncTarget ? funcTargetIdRef.current : getTarget,
   ]);
 }
