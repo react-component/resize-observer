@@ -1,8 +1,9 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { mount } from 'enzyme';
-import 'regenerator-runtime';
-import ResizeObserver from '../src';
+import ResizeObserver, { _rs as triggerResize } from '../src';
 import { spyElementPrototypes } from './utils/domHook';
+
+const waitPromise = () => Promise.resolve();
 
 describe('ResizeObserver.Collection', () => {
   let domSpy;
@@ -33,7 +34,7 @@ describe('ResizeObserver.Collection', () => {
   it('batch collection', async () => {
     const onBatchResize = jest.fn();
 
-    const wrapper = mount(
+    const { container } = render(
       <ResizeObserver.Collection onBatchResize={onBatchResize}>
         <ResizeObserver>
           <div id="div1" />
@@ -44,29 +45,31 @@ describe('ResizeObserver.Collection', () => {
       </ResizeObserver.Collection>,
     );
 
+    const div1 = container.querySelector('#div1');
+    const div2 = container.querySelector('#div2');
+
+    await waitPromise();
+    onBatchResize.mockReset();
+
     // Resize div1
-    wrapper.triggerResize(0);
-    await Promise.resolve();
-    expect(onBatchResize).toHaveBeenCalledWith([
-      expect.objectContaining({ element: wrapper.find('#div1').getDOMNode() }),
-    ]);
+    triggerResize([{ target: div1 }]);
+    await waitPromise();
+    expect(onBatchResize).toHaveBeenCalledWith([expect.objectContaining({ element: div1 })]);
 
     // Resize both
     onBatchResize.mockReset();
-    wrapper.triggerResize(0);
-    wrapper.triggerResize(1);
-    await Promise.resolve();
+    triggerResize([{ target: div1 }]);
+    triggerResize([{ target: div2 }]);
+    await waitPromise();
     expect(onBatchResize).toHaveBeenCalledWith([
-      expect.objectContaining({ element: wrapper.find('#div1').getDOMNode() }),
-      expect.objectContaining({ element: wrapper.find('#div2').getDOMNode() }),
+      expect.objectContaining({ element: div1 }),
+      expect.objectContaining({ element: div2 }),
     ]);
 
     // Resize div2
     onBatchResize.mockReset();
-    wrapper.triggerResize(1);
-    await Promise.resolve();
-    expect(onBatchResize).toHaveBeenCalledWith([
-      expect.objectContaining({ element: wrapper.find('#div2').getDOMNode() }),
-    ]);
+    triggerResize([{ target: div2 }]);
+    await waitPromise();
+    expect(onBatchResize).toHaveBeenCalledWith([expect.objectContaining({ element: div2 })]);
   });
 });
