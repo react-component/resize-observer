@@ -1,9 +1,10 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { mount } from 'enzyme';
-import 'regenerator-runtime';
-import ResizeObserver from '../src';
-import { spyElementPrototypes } from './utils/domHook';
+import ResizeObserver, { _rs as triggerResize } from '../src';
 import { _el as elementListeners } from '../src/utils/observerUtil';
+import { spyElementPrototypes } from './utils/domHook';
+
+const waitPromise = () => Promise.resolve();
 
 describe('ResizeObserver', () => {
   let errorSpy;
@@ -40,7 +41,7 @@ describe('ResizeObserver', () => {
 
   describe('children count warning', () => {
     it('without children', () => {
-      mount(<ResizeObserver />);
+      render(<ResizeObserver />);
 
       expect(errorSpy).toHaveBeenCalledWith(
         'Warning: `children` of ResizeObserver is empty. Nothing is in observe.',
@@ -48,9 +49,9 @@ describe('ResizeObserver', () => {
     });
 
     it('multiple children', () => {
-      const wrapper = mount(
+      const { container } = render(
         <ResizeObserver>
-          <div key="exist-key" />
+          <div data-name="first" key="exist-key" />
           <div />
         </ResizeObserver>,
       );
@@ -59,14 +60,14 @@ describe('ResizeObserver', () => {
         'Warning: Find more than one child node with `children` in ResizeObserver. Please use ResizeObserver.Collection instead.',
       );
 
-      expect(wrapper.find('div').first().key()).toEqual('exist-key');
+      expect(container.querySelector('div')?.getAttribute('data-name')).toEqual('first');
     });
   });
 
   describe('child ref should support', () => {
     it('function', () => {
       const refFunc = jest.fn();
-      mount(
+      render(
         <ResizeObserver>
           <div ref={refFunc} />
         </ResizeObserver>,
@@ -77,7 +78,7 @@ describe('ResizeObserver', () => {
 
     it('object', () => {
       const ref = React.createRef();
-      mount(
+      render(
         <ResizeObserver>
           <div ref={ref} />
         </ResizeObserver>,
@@ -90,14 +91,14 @@ describe('ResizeObserver', () => {
   describe('onResize', () => {
     it('basic', async () => {
       const onResize = jest.fn();
-      const wrapper = mount(
+      const { container } = render(
         <ResizeObserver onResize={onResize}>
           <div />
         </ResizeObserver>,
       );
 
-      wrapper.triggerResize();
-      await Promise.resolve();
+      triggerResize([{ target: container.firstElementChild }]);
+      await waitPromise();
       expect(onResize).toHaveBeenCalled();
     });
 
@@ -108,26 +109,26 @@ describe('ResizeObserver', () => {
       mockOffsetWidth = 0;
 
       const onResize = jest.fn();
-      const wrapper = mount(
+      const { container } = render(
         <ResizeObserver onResize={onResize}>
           <div />
         </ResizeObserver>,
       );
 
       // Init
-      wrapper.triggerResize();
-      await Promise.resolve();
+      triggerResize([{ target: container.firstElementChild }]);
+      await waitPromise();
       onResize.mockReset();
 
       // Not trigger when not change
-      wrapper.triggerResize();
-      await Promise.resolve();
+      triggerResize([{ target: container.firstElementChild }]);
+      await waitPromise();
       expect(onResize).not.toHaveBeenCalled();
 
       // Trigger when offset changed
       mockOffsetWidth = 1023;
-      wrapper.triggerResize();
-      await Promise.resolve();
+      triggerResize([{ target: container.firstElementChild }]);
+      await waitPromise();
       expect(onResize).toHaveBeenCalled();
     });
 
@@ -138,14 +139,14 @@ describe('ResizeObserver', () => {
       mockOffsetWidth = 10;
 
       const onResize = jest.fn();
-      const wrapper = mount(
+      const { container } = render(
         <ResizeObserver onResize={onResize}>
           <div />
         </ResizeObserver>,
       );
 
-      wrapper.triggerResize();
-      await Promise.resolve();
+      triggerResize([{ target: container.firstElementChild }]);
+      await waitPromise();
 
       expect(onResize).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -157,34 +158,38 @@ describe('ResizeObserver', () => {
   });
 
   it('disabled should not trigger onResize', () => {
-    const wrapper = mount(
+    const { container, rerender } = render(
       <ResizeObserver>
         <div />
       </ResizeObserver>,
     );
 
-    wrapper.setProps({ disabled: true });
-    expect(elementListeners.get(wrapper.getDOMNode())).toBeFalsy();
+    rerender(
+      <ResizeObserver disabled>
+        <div />
+      </ResizeObserver>,
+    );
+    expect(elementListeners.get(container.firstElementChild)).toBeFalsy();
   });
 
   it('unmount to clear', () => {
-    const wrapper = mount(
+    const { container, unmount } = render(
       <ResizeObserver>
         <div />
       </ResizeObserver>,
     );
-    const dom = wrapper.getDOMNode();
+    const dom = container.firstElementChild;
     expect(elementListeners.get(dom)).toBeTruthy();
 
     // Unmount
-    wrapper.unmount();
+    unmount();
     expect(elementListeners.get(dom)).toBeFalsy();
   });
 
   describe('work with child type', () => {
     it('function component', () => {
       const FC = () => <div />;
-      mount(
+      render(
         <ResizeObserver>
           <FC />
         </ResizeObserver>,
@@ -194,7 +199,7 @@ describe('ResizeObserver', () => {
 
     it('forwardRef function component', () => {
       const FRC = React.forwardRef(() => <div />);
-      mount(
+      render(
         <ResizeObserver>
           <FRC />
         </ResizeObserver>,
@@ -210,7 +215,7 @@ describe('ResizeObserver', () => {
           return null;
         }
       }
-      mount(
+      render(
         <ResizeObserver>
           <CC />
         </ResizeObserver>,
@@ -223,7 +228,7 @@ describe('ResizeObserver', () => {
     const Wrapper = props => <>{props.children}</>;
     const onResize = jest.fn();
 
-    const wrapper = mount(
+    const { container } = render(
       <ResizeObserver onResize={onResize}>
         <Wrapper>
           <div />
@@ -231,30 +236,30 @@ describe('ResizeObserver', () => {
       </ResizeObserver>,
     );
 
-    wrapper.triggerResize();
-    await Promise.resolve();
+    triggerResize([{ target: container.querySelector('div') }]);
+    await waitPromise();
 
     expect(onResize).not.toHaveBeenCalled();
   });
 
   it('support renderProps', () => {
-    const wrapper = mount(
+    const { container } = render(
       <ResizeObserver>{ref => <div ref={ref} className="block" />}</ResizeObserver>,
     );
 
-    expect(wrapper.exists('.block')).toBeTruthy();
+    expect(container.querySelector('.block')).toBeTruthy();
   });
 
   it('ref-able', () => {
     const domRef = React.createRef();
 
-    const wrapper = mount(
+    const { container } = render(
       <ResizeObserver ref={domRef}>
         <div className="block" />
       </ResizeObserver>,
     );
 
     expect(domRef.current instanceof HTMLDivElement).toBeTruthy();
-    expect(domRef.current).toBe(wrapper.find('div.block').getDOMNode());
+    expect(domRef.current).toBe(container.querySelector('div.block'));
   });
 });
