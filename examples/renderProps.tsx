@@ -1,7 +1,7 @@
 import '../assets/index.less';
 import React from 'react';
-import type { ResizeObserverProps } from '../src';
-import ResizeObserver from '../src';
+import type { ResizeObserverProps } from '@rc-component/resize-observer';
+import ResizeObserver from '@rc-component/resize-observer';
 
 export default function App() {
   const [times, setTimes] = React.useState(0);

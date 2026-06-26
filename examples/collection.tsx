@@ -1,6 +1,6 @@
 import '../assets/index.less';
 import React from 'react';
-import ResizeObserver from '../src';
+import ResizeObserver from '@rc-component/resize-observer';
 
 function randomSize() {
   return {

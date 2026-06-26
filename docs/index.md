@@ -1,6 +1,6 @@
 ---
 hero:
-  title: rc-resize-observer
+  title: '@rc-component/resize-observer'
   description: React Resize-Observer Component
 ---
 

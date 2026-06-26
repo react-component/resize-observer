@@ -1,58 +1,117 @@
-# rc-resize-observer
+<div align="center">
+  <h1>@rc-component/resize-observer</h1>
+  <p>📏 React ResizeObserver wrapper with render-prop and batch collection support.</p>
+  <p>
+    <img alt="Ant Design" src="https://mdn.alipayobjects.com/huamei_7uahnr/afts/img/A*FBw7Rr5aC7AAAAAAAAAAAAAADrJ8AQ/original" height="24" />
+  </p>
+  <p>Part of the Ant Design ecosystem.</p>
 
-[![NPM version][npm-image]][npm-url] [![dumi](https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square)](https://github.com/umijs/dumi) [![build status][github-actions-image]][github-actions-url] [![Codecov][codecov-image]][codecov-url] [![npm download][download-image]][download-url]
+  <p>
+    <a href="https://www.npmjs.com/package/@rc-component/resize-observer"><img src="https://img.shields.io/npm/v/@rc-component/resize-observer.svg?style=flat-square" alt="npm version" /></a>
+    <a href="https://www.npmjs.com/package/@rc-component/resize-observer"><img src="https://img.shields.io/npm/dm/@rc-component/resize-observer.svg?style=flat-square" alt="npm downloads" /></a>
+    <a href="https://github.com/react-component/resize-observer/actions"><img src="https://github.com/react-component/resize-observer/actions/workflows/react-component-ci.yml/badge.svg" alt="CI" /></a>
+    <a href="https://codecov.io/gh/react-component/resize-observer"><img src="https://img.shields.io/codecov/c/github/react-component/resize-observer/master.svg?style=flat-square" alt="Codecov" /></a>
+    <a href="https://bundlephobia.com/package/@rc-component/resize-observer"><img src="https://badgen.net/bundlephobia/minzip/@rc-component/resize-observer" alt="bundle size" /></a>
+    <a href="https://github.com/umijs/dumi"><img src="https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square" alt="dumi" /></a>
+  </p>
+</div>
 
-[npm-image]: http://img.shields.io/npm/v/rc-resize-observer.svg?style=flat-square
-[npm-url]: http://npmjs.org/package/rc-resize-observer
-[github-actions-image]: https://github.com/react-component/resize-observer/workflows/CI/badge.svg
-[github-actions-url]: https://github.com/react-component/resize-observer/actions
-[codecov-image]: https://img.shields.io/codecov/c/github/react-component/resize-observer/master.svg?style=flat-square
-[codecov-url]: https://codecov.io/gh/react-component/resize-observer/branch/master
-[download-image]: https://img.shields.io/npm/dm/rc-resize-observer.svg?style=flat-square
-[download-url]: https://npmjs.org/package/rc-resize-observer
+## Highlights
 
-Resize observer for React.
-
-## Live Demo
-
-https://resize-observer-react-component.vercel.app/
+- Observes resize changes for a single React child.
+- Supports render props when the observed element is not the direct child.
+- Batches multiple child resize events with `ResizeObserver.Collection`.
+- Reports both bounding-box and offset sizes.
 
 ## Install
 
-[![rc-resize-observer](https://nodei.co/npm/rc-resize-observer.png)](https://npmjs.org/package/rc-resize-observer)
+```bash
+npm install @rc-component/resize-observer
+```
 
 ## Usage
 
-```js
-import ResizeObserver from 'rc-resize-observer';
-import { render } from 'react-dom';
+```tsx pure
+import ResizeObserver from '@rc-component/resize-observer';
 
-render(
+export default () => (
   <ResizeObserver
-    onResize={() => {
-      console.log('resized!');
+    onResize={(size, element) => {
+      console.log(size.width, size.height, element);
     }}
   >
     <textarea />
-  </ResizeObserver>,
-  mountNode,
+  </ResizeObserver>
 );
 ```
 
+```tsx pure
+import ResizeObserver from '@rc-component/resize-observer';
+
+export default () => (
+  <ResizeObserver.Collection
+    onBatchResize={infoList => {
+      console.log(infoList.map(({ data, size }) => [data, size.width]));
+    }}
+  >
+    <ResizeObserver data="left">
+      <div>Left</div>
+    </ResizeObserver>
+    <ResizeObserver data="right">
+      <div>Right</div>
+    </ResizeObserver>
+  </ResizeObserver.Collection>
+);
+```
+
+Online preview: https://resize-observer.react-component.vercel.app/
+
 ## API
 
-| Property | Type                        | Default | Description                     |
-| -------- | --------------------------- | ------- | ------------------------------- |
-| disabled | boolean                     | false   |                                 |
-| onResize | ({ width, height }) => void | -       | Trigger when child node resized |
+### ResizeObserver
+
+| Name       | Type                                                           | Default | Description                                                          |
+| ---------- | -------------------------------------------------------------- | ------- | -------------------------------------------------------------------- |
+| `children` | ReactNode \| `(ref: React.RefObject<Element>) => ReactElement` | -       | Element to observe, or a render function receiving the observer ref. |
+| `data`     | any                                                            | -       | Extra payload passed to `ResizeObserver.Collection` callbacks.       |
+| `disabled` | boolean                                                        | false   | Disable resize observation.                                          |
+| `onResize` | `(size: SizeInfo, element: HTMLElement) => void`               | -       | Triggered when the observed element size changes.                    |
+
+### SizeInfo
+
+| Name           | Type   | Description                                                                        |
+| -------------- | ------ | ---------------------------------------------------------------------------------- |
+| `height`       | number | Floored bounding-box height.                                                       |
+| `offsetHeight` | number | Element offset height, normalized when it matches the rounded bounding-box height. |
+| `offsetWidth`  | number | Element offset width, normalized when it matches the rounded bounding-box width.   |
+| `width`        | number | Floored bounding-box width.                                                        |
+
+### ResizeObserver.Collection
+
+| Name            | Type                                 | Default | Description                                                          |
+| --------------- | ------------------------------------ | ------- | -------------------------------------------------------------------- |
+| `children`      | ReactNode                            | -       | Observers to collect.                                                |
+| `onBatchResize` | `(resizeInfo: ResizeInfo[]) => void` | -       | Triggered once per microtask with all collected child resize events. |
 
 ## Development
 
-```
+```bash
 npm install
 npm start
+npm test
+npm run tsc
+npm run compile
+npm run build
 ```
+
+## Release
+
+```bash
+npm run prepublishOnly
+```
+
+`prepublishOnly` builds the package with Father and publishes through `rc-np`. `postpublish` deploys the dumi site with `gh-pages`.
 
 ## License
 
-rc-resize-observer is released under the MIT license.
+@rc-component/resize-observer is released under the MIT license.
