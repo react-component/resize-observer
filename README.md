@@ -110,8 +110,8 @@ npm run build
 npm run prepublishOnly
 ```
 
-`prepublishOnly` builds the package with Father and publishes through `rc-np`. `postpublish` deploys the dumi site with `gh-pages`.
+The release flow is handled by `@rc-component/np` through the `rc-np` command after the package build.
 
 ## License
 
-@rc-component/resize-observer is released under the MIT license.
+@rc-component/resize-observer is released under the [MIT](./LICENSE.md) license.
