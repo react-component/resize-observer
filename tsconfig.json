@@ -10,7 +10,9 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": [".dumi/tmp/*"],
-      "@rc-component/resize-observer": ["src/index.tsx"]
+      "@rc-component/resize-observer": ["src/index.tsx"],
+      "@rc-component/resize-observer/es": ["src"],
+      "@rc-component/resize-observer/es/*": ["src/*"]
     }
   },
   "include": [".dumirc.ts", "src", "tests", "examples"]
