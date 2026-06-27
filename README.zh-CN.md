@@ -1,8 +1,7 @@
 <div align="center">
   <h1>@rc-component/resize-observer</h1>
-  <p><sub>Ant Design 生态的一部分。</sub></p>
-  <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
-  <p>📐 React 尺寸观察组件，用于监听元素大小变化。</p>
+  <p><sub><img alt="Ant Design" height="14" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="vertical-align: -0.125em;" /> Ant Design 生态的一部分。</sub></p>
+  <p>📏 React 尺寸观察组件，用于监听元素大小变化。</p>
 
   <p>
     <a href="https://www.npmjs.com/package/@rc-component/resize-observer"><img src="https://img.shields.io/npm/v/@rc-component/resize-observer.svg?style=flat-square" alt="npm version" /></a>
@@ -19,10 +18,10 @@
 
 ## 特性
 
-- Observes resize changes for a single React child.
-- 支持 render props when the observed element is not the direct child.
-- Batches multiple child resize events with `ResizeObserver.Collection`.
-- Reports both bounding-box and offset sizes.
+- 观察单个 React 子项的调整大小变化。
+- 当观察到的元素不是直接子元素时支持渲染道具。
+- 使用 `ResizeObserver.Collection` 批量处理多个子级调整大小事件。
+- 报告边界框和偏移大小。
 
 ## 安装
 
@@ -65,7 +64,7 @@ export default () => (
 );
 ```
 
-Online preview: https://resize-observer.react-component.vercel.app/
+在线预览：https://resize-observer.react-component.vercel.app/
 
 ## API
 
@@ -73,26 +72,26 @@ Online preview: https://resize-observer.react-component.vercel.app/
 
 | 名称       | 类型                                                           | 默认值 | 说明                                                          |
 | ---------- | -------------------------------------------------------------- | ------- | -------------------------------------------------------------------- |
-| `children` | ReactNode \| `(ref: React.RefObject<Element>) => ReactElement` | -       | Element to observe, or a render function receiving the observer ref. |
-| `data`     | any                                                            | -       | Extra payload passed to `ResizeObserver.Collection` callbacks.       |
-| `disabled` | boolean                                                        | false   | Disable resize observation.                                          |
-| `onResize` | `(size: SizeInfo, element: HTMLElement) => void`               | -       | Triggered when the observed element size changes.                    |
+| `children` | ReactNode \| `(ref: React.RefObject<Element>) => ReactElement` | -       | 要监听的元素，或接收 observer ref 的渲染函数。 |
+| `data`     | any                                                            | -       | 传递给 `ResizeObserver.Collection` 回调的额外数据。       |
+| `disabled` | boolean                                                        | false   | 禁用尺寸监听。                                          |
+| `onResize` | `(size: SizeInfo, element: HTMLElement) => void`               | -       | 监听元素尺寸变化时触发。                    |
 
 ### SizeInfo
 
 | 名称           | 类型   | 说明                                                                        |
 | -------------- | ------ | ---------------------------------------------------------------------------------- |
-| `height`       | number | Floored bounding-box height.                                                       |
-| `offsetHeight` | number | Element offset height, normalized when it matches the rounded bounding-box height. |
-| `offsetWidth`  | number | Element offset width, normalized when it matches the rounded bounding-box width.   |
-| `width`        | number | Floored bounding-box width.                                                        |
+| `height`       | number | 向下取整后的包围盒高度。                                                       |
+| `offsetHeight` | number | 元素 offsetHeight；当它与四舍五入后的包围盒高度一致时会被规范化。 |
+| `offsetWidth`  | number | 元素 offsetWidth；当它与四舍五入后的包围盒宽度一致时会被规范化。   |
+| `width`        | number | 向下取整后的包围盒宽度。                                                        |
 
 ### ResizeObserver.Collection
 
 | 名称            | 类型                                 | 默认值 | 说明                                                          |
 | --------------- | ------------------------------------ | ------- | -------------------------------------------------------------------- |
-| `children`      | ReactNode                            | -       | Observers to collect.                                                |
-| `onBatchResize` | `(resizeInfo: ResizeInfo[]) => void` | -       | Triggered once per microtask with all collected child resize events. |
+| `children`      | ReactNode                            | -       | 要收集的观察器。                                                |
+| `onBatchResize` | `(resizeInfo: ResizeInfo[]) => void` | -       | 每个微任务触发一次，并携带收集到的所有子元素 resize 事件。 |
 
 ## 本地开发
 
@@ -111,8 +110,8 @@ npm run build
 npm run prepublishOnly
 ```
 
-The release flow is handled by `@rc-component/np` through the `rc-np` command after the package build.
+包构建完成后，发布流程由 `@rc-component/np` 通过 `rc-np` 命令处理。
 
 ## 许可证
 
-@rc-component/resize-observer is released under the [MIT](./LICENSE.md) license.
+@rc-component/resize-observer 基于 [MIT](./LICENSE.md) 许可证发布。
