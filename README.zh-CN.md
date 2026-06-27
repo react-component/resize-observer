@@ -1,6 +1,7 @@
 <div align="center">
   <h1>@rc-component/resize-observer</h1>
   <p><sub>Ant Design 生态的一部分。</sub></p>
+  <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
   <p>📐 React 尺寸观察组件，用于监听元素大小变化。</p>
 
   <p>

@@ -1,6 +1,7 @@
 <div align="center">
   <h1>@rc-component/resize-observer</h1>
   <p><sub>Part of the Ant Design ecosystem.</sub></p>
+  <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
   <p>📏 React ResizeObserver wrapper with render-prop and batch collection support.</p>
 
   <p>
