@@ -8,12 +8,28 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@@/*": [".dumi/tmp/*"],
-      "@rc-component/resize-observer": ["src/index.tsx"],
-      "@rc-component/resize-observer/es": ["src"],
-      "@rc-component/resize-observer/es/*": ["src/*"]
-    }
+      "@/*": [
+        "src/*"
+      ],
+      "@@/*": [
+        ".dumi/tmp/*"
+      ],
+      "@rc-component/resize-observer": [
+        "src/index.tsx"
+      ],
+      "@rc-component/resize-observer/es": [
+        "src"
+      ],
+      "@rc-component/resize-observer/es/*": [
+        "src/*"
+      ]
+    },
+    "ignoreDeprecations": "5.0"
   },
-  "include": [".dumirc.ts", "src", "tests", "examples"]
+  "include": [
+    ".dumirc.ts",
+    "src",
+    "tests",
+    "examples"
+  ]
 }
