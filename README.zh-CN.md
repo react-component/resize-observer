@@ -4,12 +4,12 @@
   <p>📏 React 尺寸观察组件，用于监听元素大小变化。</p>
 
   <p>
-    <a href="https://www.npmjs.com/package/@rc-component/resize-observer"><img src="https://img.shields.io/npm/v/@rc-component/resize-observer.svg?style=flat-square" alt="npm version" /></a>
-    <a href="https://www.npmjs.com/package/@rc-component/resize-observer"><img src="https://img.shields.io/npm/dm/@rc-component/resize-observer.svg?style=flat-square" alt="npm downloads" /></a>
-    <a href="https://github.com/react-component/resize-observer/actions"><img src="https://github.com/react-component/resize-observer/actions/workflows/react-component-ci.yml/badge.svg" alt="CI" /></a>
-    <a href="https://codecov.io/gh/react-component/resize-observer"><img src="https://img.shields.io/codecov/c/github/react-component/resize-observer/master.svg?style=flat-square" alt="Codecov" /></a>
-    <a href="https://bundlephobia.com/package/@rc-component/resize-observer"><img src="https://badgen.net/bundlephobia/minzip/@rc-component/resize-observer" alt="bundle size" /></a>
-    <a href="https://github.com/umijs/dumi"><img src="https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square" alt="dumi" /></a>
+    <a href="https://npmjs.org/package/@rc-component/resize-observer"><img alt="NPM version" src="https://img.shields.io/npm/v/@rc-component/resize-observer.svg?style=flat-square"></a>
+    <a href="https://npmjs.org/package/@rc-component/resize-observer"><img alt="npm downloads" src="https://img.shields.io/npm/dm/@rc-component/resize-observer.svg?style=flat-square"></a>
+    <a href="https://github.com/react-component/resize-observer/actions/workflows/react-component-ci.yml"><img alt="build status" src="https://github.com/react-component/resize-observer/actions/workflows/react-component-ci.yml/badge.svg"></a>
+    <a href="https://app.codecov.io/gh/react-component/resize-observer"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/react-component/resize-observer/master.svg?style=flat-square"></a>
+    <a href="https://bundlephobia.com/package/@rc-component/resize-observer"><img alt="bundle size" src="https://img.shields.io/bundlephobia/minzip/@rc-component/resize-observer?style=flat-square"></a>
+    <a href="https://github.com/umijs/dumi"><img alt="dumi" src="https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square"></a>
   </p>
 </div>
 
