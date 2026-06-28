@@ -19,10 +19,10 @@
   "homepage": "https://react-component.github.io/resize-observer",
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-component/resize-observer.git"
+    "url": "https://github.com/react-component/resize-observer.git"
   },
   "bugs": {
-    "url": "http://github.com/react-component/resize-observer/issues"
+    "url": "https://github.com/react-component/resize-observer/issues"
   },
   "license": "MIT",
   "scripts": {
@@ -80,5 +80,8 @@
   },
   "tnpm": {
     "mode": "npm"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
