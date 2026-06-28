@@ -19,8 +19,8 @@
 ## 特性
 
 - 观察单个 React 子项的调整大小变化。
-- 当观察到的元素不是直接子元素时支持渲染道具。
-- 使用 `ResizeObserver.Collection` 批量处理多个子级调整大小事件。
+- 当观察到的元素不是直接子元素时支持render props。
+- 使用 `ResizeObserver.Collection` 批量处理多个子元素的尺寸变化事件。
 - 报告边界框和偏移大小。
 
 ## 安装
