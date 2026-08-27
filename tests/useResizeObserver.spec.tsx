@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { useEvent } from '@rc-component/util';
 import React from 'react';
 import { useResizeObserver } from '../src';
@@ -25,6 +25,42 @@ describe('useResizeObserver', () => {
       // Once the ref callback stores the DOM into state, the latest element should
       // still be observed even though the getter function itself never changes.
       expect(elementListeners.get(target)).toBeTruthy();
+    });
+  });
+
+  it('should switch observation when a stable getter resolves to a different element', async () => {
+    function Demo() {
+      const firstRef = React.useRef<HTMLDivElement>(null);
+      const secondRef = React.useRef<HTMLDivElement>(null);
+      const [useSecond, setUseSecond] = React.useState(false);
+      const getTarget = useEvent(() => (useSecond ? secondRef.current : firstRef.current));
+
+      useResizeObserver(true, getTarget as () => HTMLElement);
+
+      return (
+        <>
+          <button type="button" onClick={() => setUseSecond(true)}>
+            switch
+          </button>
+          <div ref={firstRef} data-testid="first" />
+          <div ref={secondRef} data-testid="second" />
+        </>
+      );
+    }
+
+    const { getByRole, getByTestId } = render(<Demo />);
+    const first = getByTestId('first');
+    const second = getByTestId('second');
+
+    await waitFor(() => {
+      expect(elementListeners.get(first)).toBeTruthy();
+    });
+
+    fireEvent.click(getByRole('button', { name: 'switch' }));
+
+    await waitFor(() => {
+      expect(elementListeners.get(first)).toBeFalsy();
+      expect(elementListeners.get(second)).toBeTruthy();
     });
   });
 });
