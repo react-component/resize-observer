@@ -69,14 +69,14 @@ export default function useResizeObserver(
   React.useEffect(() => {
     const target = isFuncTarget ? getTarget() : getTarget;
 
-    if (target && enabled) {
+    if (target && target instanceof Element && enabled) {
       observe(target, onInternalResize);
     } else if (enabled && isFuncTarget) {
       funcTargetIdRef.current += 1;
     }
 
     return () => {
-      if (target) {
+      if (target && target instanceof Element) {
         unobserve(target, onInternalResize);
       }
     };

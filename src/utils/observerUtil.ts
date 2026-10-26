@@ -26,6 +26,10 @@ export const _rs = process.env.NODE_ENV !== 'production' ? onResize : null; // e
 
 // ============================== Observe ==============================
 export function observe(element: Element, callback: ResizeListener) {
+  if (!element || !(element instanceof Element)) {
+    return;
+  }
+
   if (!elementListeners.has(element)) {
     elementListeners.set(element, new Set());
     ensureResizeObserver().observe(element);
@@ -35,6 +39,10 @@ export function observe(element: Element, callback: ResizeListener) {
 }
 
 export function unobserve(element: Element, callback: ResizeListener) {
+  if (!element || !(element instanceof Element)) {
+    return;
+  }
+
   if (elementListeners.has(element)) {
     elementListeners.get(element).delete(callback);
     if (!elementListeners.get(element).size) {

@@ -2,9 +2,29 @@ import { render, waitFor } from '@testing-library/react';
 import { useEvent } from '@rc-component/util';
 import React from 'react';
 import { useResizeObserver } from '../src';
-import { _el as elementListeners } from '../src/utils/observerUtil';
+import { observe, unobserve, _el as elementListeners } from '../src/utils/observerUtil';
 
 describe('useResizeObserver', () => {
+  it('should ignore non-Element target without crashing', () => {
+    const textNode = document.createTextNode('sample') as any;
+    expect(() => {
+      observe(textNode, () => {});
+    }).not.toThrow();
+  });
+
+  it('should ignore a non-Element target during cleanup', () => {
+    const textNode = document.createTextNode('sample') as any;
+    const listener = () => {};
+    elementListeners.set(textNode, new Set([listener]));
+
+    try {
+      expect(() => unobserve(textNode, listener)).not.toThrow();
+      expect(elementListeners.get(textNode)).toEqual(new Set([listener]));
+    } finally {
+      elementListeners.delete(textNode);
+    }
+  });
+
   it('should observe latest element when target getter closes over stateful ref value', async () => {
     function Demo() {
       const [element, setElement] = React.useState<HTMLElement | null>(null);
